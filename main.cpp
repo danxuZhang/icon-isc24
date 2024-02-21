@@ -4,7 +4,7 @@
 
 #include "core/common/graupel.hpp"
 #include "core/common/types.hpp"
-#include "core/common/utils.cpp"
+#include "core/common/utils.hpp"
 #include "io/io.hpp"
 #include <chrono>
 
@@ -45,12 +45,12 @@ int main(int argc, char *argv[]) {
   nvec = ncells;
   qnc_1 = qnc;
 
-  auto start_time = std::chrono::high_resolution_clock::now();
+  auto start_time = std::chrono::steady_clock::now();
 
   graupel(nvec, kend, ivbeg, ivend, kbeg, dt, dz, t, rho, p, qv, qc, qi, qr, qs,
           qg, qnc_1, prr_gsp, pri_gsp, prs_gsp, prg_gsp, pflx);
 
-  auto end_time = std::chrono::high_resolution_clock::now();
+  auto end_time = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
       end_time - start_time);
 
