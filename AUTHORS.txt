@@ -1,0 +1,10 @@
+## muphys-cpp authors
+
+Georgiana Mania
+Harshada Balasubramanian
+Ralf Müller
+Panagiotis Adamidis
+
+## Contributors to the muphys-cpp model
+
+Yannik Könneker
