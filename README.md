@@ -38,3 +38,5 @@ Other dependency like [googletest](https://github.com/google/googletest) is buil
 `cd build && ctest` 
 
 ## License
+
+muphys-cpp is available under a BSD 3-clause license. See [LICENSES/](./LICENSES) for license information and [AUTHORS.TXT](./AUTHORS.TXT) for a list of authors.
