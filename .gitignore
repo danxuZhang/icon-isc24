@@ -3,8 +3,10 @@
 
 .DS_Store
 
+*.log
 output.nc
 build/
+build-*/
 
 # Prerequisites
 *.d
