@@ -29,6 +29,7 @@ constexpr real_t b_s = -static_cast<real_t>(1.0) / static_cast<real_t>(6.0);
  * @param [in] qx Specific mass
  * @return Scale factor
  */
+ #pragma acc routine seq
 TARGET real_t vel_scale_factor(int iqx, real_t xrho, real_t rho, real_t t,
                                real_t qx) {
 

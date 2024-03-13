@@ -10,10 +10,13 @@
 // ---------------------------------------------------------------
 //
 #include "core/common/graupel.hpp"
+#include "types.hpp"
 #include <algorithm>
 #include <iostream>
 #include <numeric>
 #include <chrono>
+
+#include <openacc.h>
 
 using namespace property;
 using namespace thermo;
@@ -24,9 +27,22 @@ using namespace graupel_ct;
 struct t_qx_ptr {
   t_qx_ptr(array_1d_t<real_t> &p_, array_1d_t<real_t> &x_) : p(p_), x(x_) {}
 
-  array_1d_t<real_t> &p;
-  array_1d_t<real_t> &x;
+  array_1d_t<real_t> p;
+  array_1d_t<real_t> x;
 }; // pointer vector
+
+#pragma acc routine seq
+template<typename T>
+auto get_min_element(T* arr, size_t sz) -> T{
+  T min_ele = arr[0];
+  for (size_t i = 0; i < sz; ++i) {
+    if (arr[i] < min_ele) {
+      min_ele = arr[i];
+    }
+  }
+  return min_ele;
+}
+
 
 /**
  * @brief TODO
@@ -41,6 +57,7 @@ struct t_qx_ptr {
  * @param q_kp1 specific mass in next lower cell
  * @param rho density
  */
+#pragma acc routine seq
 void precip(const real_t (&params)[3], real_t (&precip)[3], real_t zeta,
             real_t vc, real_t flx, real_t vt, real_t q, real_t q_kp1,
             real_t rho) {
@@ -300,8 +317,10 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   size_t kp1;
   size_t k_end = (lrain) ? ke : kstart - 1;
   auto loop3_start = std::chrono::steady_clock::now();
-  // TODO grid operations, possilbe parallelization
+  #pragma acc parallel 
+  #pragma acc loop seq 
   for (size_t k = kstart; k < k_end; k++) {
+    # pragma acc loop private(oned_vec_index, kp1, qliq, qice, e_int, zeta, xrho, vc, update[0:3])
     for (size_t iv = ivstart; iv < ivend; iv++) {
       oned_vec_index = k * ivend + iv;
       if (k == kstart) {
@@ -309,7 +328,7 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       }
 
       kp1 = std::min(ke - 1, k + 1);
-      if (k >= *std::min_element(kmin[iv].begin(), kmin[iv].end())) {
+      if (k >= get_min_element(kmin[iv].data(), kmin[iv].size())) {
         qliq = q[lqc].x[oned_vec_index] + q[lqr].x[oned_vec_index];
         qice = q[lqs].x[oned_vec_index] + q[lqi].x[oned_vec_index] +
                q[lqg].x[oned_vec_index];
@@ -321,6 +340,7 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
         zeta = dt / (2.0 * dz[oned_vec_index]);
         xrho = std::sqrt(rho_00 / rho[oned_vec_index]);
 
+        #pragma acc loop seq 
         for (size_t ix = 0; ix < np; ix++) {
           if (k >= kmin[iv][qp_ind[ix]]) {
             vc = vel_scale_factor(qp_ind[ix], xrho, rho[oned_vec_index],
@@ -355,4 +375,15 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   auto loop3_end = std::chrono::steady_clock::now();
   auto loop3_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop3_end - loop3_start);
   std::cout << "time for loop three: " << loop3_duration.count() << "ms" << std::endl;
+
+  prr_gsp = q[0].p;
+  qr = q[0].x;
+  pri_gsp = q[1].p;
+  qi = q[1].x;
+  prs_gsp = q[2].p;
+  qs = q[2].x;
+  prg_gsp = q[3].p;
+  qg = q[3].x;
+  qc = q[4].x;
+  qv = q[5].x;
 }
