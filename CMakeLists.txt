@@ -4,6 +4,8 @@ set(CMAKE_CXX_STANDARD 17)
 # notify all possible issues 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 option(MU_ENABLE_SINGLE "Enable single precision" OFF)
 # available front-ends
 option(MU_IMPL "Select implementation" "seq")
