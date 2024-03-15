@@ -19,8 +19,15 @@ export INPUT="20k.nc"
 
 cd /home/b/b382805/dx/icon-isc24
 
-# echo "Profile run:"
-module load nvhpc
-nsys profile --trace=cuda,openacc --stats=true $PREFIX/bin/graupel ./tasks/20k.nc
+rm -f output.nc
 
+echo "Profile run:"
+module load nvhpc
+nsys profile --trace=cuda,openacc --stats=true $PREFIX/bin/graupel ./tasks/$INPUT
+
+echo "Actual run: "
 $PREFIX/bin/graupel ./tasks/20k.nc
+
+echo "Evaulate result: "
+spack load cdo@2.2.2
+cdo infon -sub output.nc reference_results/sequential_double_$INPUT

@@ -14,7 +14,7 @@ export CXXFLAGS="-std=c++17 -Minfo=all"
 export PREFIX="build-nvhpc-seq"
 
 #configure muphys-cpp
-cmake -DMU_IMPL=seq -B $PREFIX -S .
+cmake -DMU_IMPL=seq -DMU_ENABLE_TESTS=OFF -B $PREFIX -S .
 
-#build 
+#build
 cmake --build $PREFIX --parallel
