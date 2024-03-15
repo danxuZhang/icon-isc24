@@ -85,8 +85,9 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
              array_1d_t<real_t> &prg_gsp, array_1d_t<real_t> &pflx) {
   std::cout << "openacc graupel" << std::endl;
 
-  array_1d_t<bool> is_sig_present(nvec *
-                                  ke); // is snow, ice or graupel present?
+  // array_1d_t<bool> is_sig_present(nvec *
+  //                                 ke); // is snow, ice or graupel present?
+  bool* is_sig_present = (bool*) malloc(nvec * ke * sizeof(bool));
 
   array_1d_t<size_t> ind_k(nvec * ke),
       ind_i(nvec * ke); // k index of gathered point, iv index of gathered point
@@ -96,15 +97,23 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   real_t cv, vc, eta, zeta, qvsi, qice, qliq, qtot, dvsw, dvsw0, dvsi, n_ice,
       m_ice, x_ice, n_snow, l_snow, ice_dep, e_int, stot, xrho;
 
-  real_t update[3], // scratch array with output from precipitation step
-      sink[nx],     // tendencies
-      dqdt[nx];     // tendencies
+  real_t update[3]; // scratch array with output from precipitation step
+      // sink[nx],     // tendencies
+      // dqdt[nx];     // tendencies
   array_1d_t<real_t> eflx(
       nvec); // internal energy flux from precipitation (W/m2 )
-  array_2d_t<real_t> sx2x(nx, array_1d_t<real_t>(nx, 0.0)), // conversion rates
-      vt(nvec,
-         array_1d_t<real_t>(
-             np)); // terminal velocity for different hydrometeor categories
+  //  array_2d_t<real_t> sx2x(nx, array_1d_t<real_t>(nx, 0.0)), // conversion rates
+  //     vt(nvec,
+  //        array_1d_t<real_t>(
+  //            np)); // terminal velocity for different hydrometeor categories
+  // sx2x now a local variable within loop2
+  real_t** vt = (real_t**) malloc(nvec * sizeof(real_t*));
+  for (size_t i = 0; i < nvec; ++i) {
+    vt[i] = (real_t*) malloc(np * sizeof(real_t));
+    for (size_t j = 0; j < np; ++j) {
+      vt[i][j] = 0.0;
+    }
+  }
 
   array_1d_t<t_qx_ptr>
       q{}; // vector of pointers to point to four hydrometeor inouts
@@ -164,7 +173,20 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   size_t k, iv;
   real_t sx2x_sum;
   // TODO parallelize, likely independent operations
+  #pragma acc parallel loop private(k, iv, oned_vec_index, dvsw, qvsi, dvsi, n_snow, l_snow) \
+                            private(n_ice, m_ice, x_ice, eta, ice_dep, dvsw0) \
+                            private(stot, qice, qliq, qtot, cv, sx2x_sum) 
   for (size_t j = 0; j < jmx_; j++) {
+    real_t sx2x[nx][nx];
+    for (size_t i = 0; i < nx; ++i) {
+      for (size_t j_ = 0; j_ < nx; ++j_) {
+        sx2x[i][j_] = 0.0;
+      }
+    }
+
+    real_t sink[nx];
+    real_t dqdt[nx];
+
     k = ind_k[j];
     iv = ind_i[j];
     oned_vec_index = k * ivend + iv;
@@ -255,11 +277,12 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
                           rho[oned_vec_index], dvsw0, q[lqg].x[oned_vec_index]);
     }
 
+    #pragma acc loop seq
     for (size_t ix = 0; ix < nx; ix++) {
       sink[qx_ind[ix]] = 0.0;
       if ((is_sig_present[j]) or (qx_ind[ix] == lqc) or (qx_ind[ix] == lqv) or
           (qx_ind[ix] == lqr)) {
-
+        #pragma acc loop seq
         for (size_t i = 0; i < nx; i++) {
           sink[qx_ind[ix]] = sink[qx_ind[ix]] + sx2x[qx_ind[ix]][i];
         }
@@ -268,7 +291,7 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
         if ((sink[qx_ind[ix]] > stot) &&
             (q[qx_ind[ix]].x[oned_vec_index] > qmin)) {
           real_t nextSink = 0.0;
-
+          #pragma acc loop seq
           for (size_t i = 0; i < nx; i++) {
             sx2x[qx_ind[ix]][i] = sx2x[qx_ind[ix]][i] * stot / sink[qx_ind[ix]];
             nextSink = nextSink + sx2x[qx_ind[ix]][i];
@@ -278,10 +301,10 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       }
     }
 
-    // TODO parallelize for reduce
-    // #pragma acc kernels
+    #pragma acc loop seq
     for (size_t ix = 0; ix < nx; ix++) {
       sx2x_sum = 0;
+      #pragma acc loop seq
       for (size_t i = 0; i < nx; i++) {
         sx2x_sum = sx2x_sum + sx2x[i][qx_ind[ix]];
       }
@@ -303,11 +326,6 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
              (dqdt[lqi] + dqdt[lqs] + dqdt[lqg]) *
                  (lsc - (ci - cvv) * t[oned_vec_index])) /
             cv;
-
-    // reset all values of sx2x to zero
-    for (auto &v : sx2x) {
-      std::fill(v.begin(), v.end(), 0);
-    }
   }
   auto loop2_end = std::chrono::steady_clock::now();
   auto loop2_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop2_end - loop2_start);
