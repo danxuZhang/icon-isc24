@@ -404,4 +404,9 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   qg = q[3].x;
   qc = q[4].x;
   qv = q[5].x;
+
+  for (size_t i = 0; i < nvec; ++i) {
+    free(vt[i]);
+  }
+  free(vt);
 }
