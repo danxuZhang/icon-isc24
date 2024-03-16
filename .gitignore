@@ -9,8 +9,10 @@ compile_commands.json
 *.nsys-rep
 *.sqlite
 
+tasks/1500k.nc
 *.log
 output.nc
+*output*.nc
 build/
 build-*/
 
