@@ -15,6 +15,7 @@
 #include <iostream>
 #include <numeric>
 #include <chrono>
+#include <cmath>
 
 #include <openacc.h>
 
@@ -25,10 +26,12 @@ using namespace idx;
 using namespace graupel_ct;
 
 struct t_qx_ptr {
-  t_qx_ptr(array_1d_t<real_t> &p_, array_1d_t<real_t> &x_) : p(p_), x(x_) {}
+  t_qx_ptr() : p(nullptr), x(nullptr), sz(0) {}
+  t_qx_ptr(array_1d_t<real_t> &p_, array_1d_t<real_t> &x_) : p(p_.data()), x(x_.data()), sz(p_.size()) {}
 
-  array_1d_t<real_t> p;
-  array_1d_t<real_t> x;
+  real_t* p;
+  real_t* x;
+  size_t sz;
 }; // pointer vector
 
 #pragma acc routine seq
@@ -85,28 +88,21 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
              array_1d_t<real_t> &prg_gsp, array_1d_t<real_t> &pflx) {
   std::cout << "openacc graupel" << std::endl;
 
-  // array_1d_t<bool> is_sig_present(nvec *
-  //                                 ke); // is snow, ice or graupel present?
-  bool* is_sig_present = (bool*) malloc(nvec * ke * sizeof(bool));
+  auto is_sig_present = (bool*) malloc(nvec * ke * sizeof(bool)); // is snow, ice or graupel present?
 
-  array_1d_t<size_t> ind_k(nvec * ke),
-      ind_i(nvec * ke); // k index of gathered point, iv index of gathered point
-  array_2d_t<size_t> kmin(
-      nvec, array_1d_t<size_t>(np)); // first level with condensate
+  auto ind_k = (size_t*) malloc(nvec * ke * sizeof(size_t)); // k index of gathered point
+  auto ind_i = (size_t*) malloc(nvec * ke * sizeof(size_t)); // iv index of gathered point
+
+  auto kmin = (size_t**) malloc(nvec * sizeof(size_t*));
+  for (size_t i = 0; i < nvec; ++i) {
+    kmin[i] = (size_t*) malloc(np * sizeof(size_t));
+  } // first level with condensate
 
   real_t cv, vc, eta, zeta, qvsi, qice, qliq, qtot, dvsw, dvsw0, dvsi, n_ice,
       m_ice, x_ice, n_snow, l_snow, ice_dep, e_int, stot, xrho;
 
   real_t update[3]; // scratch array with output from precipitation step
-      // sink[nx],     // tendencies
-      // dqdt[nx];     // tendencies
-  array_1d_t<real_t> eflx(
-      nvec); // internal energy flux from precipitation (W/m2 )
-  //  array_2d_t<real_t> sx2x(nx, array_1d_t<real_t>(nx, 0.0)), // conversion rates
-  //     vt(nvec,
-  //        array_1d_t<real_t>(
-  //            np)); // terminal velocity for different hydrometeor categories
-  // sx2x now a local variable within loop2
+  auto eflx = (real_t*) malloc(nvec * sizeof(real_t)); // internal energy flux from precipitation (W/m2 )
   real_t** vt = (real_t**) malloc(nvec * sizeof(real_t*));
   for (size_t i = 0; i < nvec; ++i) {
     vt[i] = (real_t*) malloc(np * sizeof(real_t));
@@ -115,16 +111,15 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
     }
   }
 
-  array_1d_t<t_qx_ptr>
-      q{}; // vector of pointers to point to four hydrometeor inouts
+  t_qx_ptr q[6]; // vector of pointers to point to four hydrometeor inouts
   array_1d_t<real_t> emptyArray;
-  q.emplace_back(prr_gsp, qr);
-  q.emplace_back(pri_gsp, qi);
-  q.emplace_back(prs_gsp, qs);
-  q.emplace_back(prg_gsp, qg);
+  q[0] = {prr_gsp, qr};
+  q[1] = {pri_gsp, qi};
+  q[2] = {prs_gsp, qs};
+  q[3] = {prg_gsp, qg};
 
-  q.emplace_back(emptyArray, qc);
-  q.emplace_back(emptyArray, qv);
+  q[4] = {emptyArray, qc};
+  q[5] = {emptyArray, qv};
 
   size_t jmx = 0;
   size_t jmx_ = jmx;
@@ -338,7 +333,7 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   #pragma acc parallel 
   #pragma acc loop seq 
   for (size_t k = kstart; k < k_end; k++) {
-    # pragma acc loop private(oned_vec_index, kp1, qliq, qice, e_int, zeta, xrho, vc, update[0:3])
+    # pragma acc loop private(oned_vec_index, kp1, qliq, qice, e_int, zeta, xrho, vc, update)
     for (size_t iv = ivstart; iv < ivend; iv++) {
       oned_vec_index = k * ivend + iv;
       if (k == kstart) {
@@ -346,7 +341,7 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       }
 
       kp1 = std::min(ke - 1, k + 1);
-      if (k >= get_min_element(kmin[iv].data(), kmin[iv].size())) {
+      if (k >= get_min_element(kmin[iv], np)) {
         qliq = q[lqc].x[oned_vec_index] + q[lqr].x[oned_vec_index];
         qice = q[lqs].x[oned_vec_index] + q[lqi].x[oned_vec_index] +
                q[lqg].x[oned_vec_index];
@@ -394,19 +389,14 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   auto loop3_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop3_end - loop3_start);
   std::cout << "time for loop three: " << loop3_duration.count() << "ms" << std::endl;
 
-  prr_gsp = q[0].p;
-  qr = q[0].x;
-  pri_gsp = q[1].p;
-  qi = q[1].x;
-  prs_gsp = q[2].p;
-  qs = q[2].x;
-  prg_gsp = q[3].p;
-  qg = q[3].x;
-  qc = q[4].x;
-  qv = q[5].x;
-
   for (size_t i = 0; i < nvec; ++i) {
     free(vt[i]);
+    free(kmin[i]);
   }
+  free(is_sig_present);
   free(vt);
+  free(kmin);
+  free(ind_k);
+  free(ind_i);
+  free(eflx);
 }

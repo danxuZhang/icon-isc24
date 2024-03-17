@@ -13,7 +13,8 @@ ulimit -c 0
 
 module load nvhpc
 # module load gcc/11.2.0-gcc-11.2.0
-eval $(/work/k20200/k202174/spack/bin/spack load --sh gcc@12.3.0)
+module load gcc/.12.3.0-gcc-11.2.0-nvptx
+export LD_LIBRARY_PATH=/sw/spack-levante/gcc-12.3.0-ab6j4u/lib64:$LD_LIBRARY_PATH
 
 spack load netcdf-cxx4@4.3.1
 spack load cdo@2.2.2
@@ -36,7 +37,7 @@ rm -rf $SEQ_BUILD $ACC_BUILD
 export CC=nvc
 export CXX=nvc++
 export SEQ_FLAGS=" -O2 -std=c++17 -Wall -Wextra "
-export ACC_FLAGS=" -acc=$ACC_TARGET -gpu=managed -Minfo=accel $SEQ_FLAGS"
+export ACC_FLAGS=" -acc=$ACC_TARGET -gpu=managed -Minfo=accel -fast $SEQ_FLAGS"
 
 echo "Building Sequential: "
 cmake -DMU_IMPL=seq -DMU_ENABLE_TESTS=OFF \
