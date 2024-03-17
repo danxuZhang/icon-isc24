@@ -8,8 +8,8 @@ spack load netcdf-cxx4@4.3.1
 export LD_LIBRARY_PATH=/sw/spack-levante/gcc-11.2.0-bcn7mb/lib64:$LD_LIBRARY_PATH
 
 # export TARGET="host"
-# export TARGET="multicore"
-export TARGET="gpu"
+export TARGET="multicore"
+# export TARGET="gpu"
 
 export CC=nvc
 export CXX=nvc++

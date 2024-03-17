@@ -9,7 +9,7 @@ export LD_LIBRARY_PATH=/sw/spack-levante/gcc-11.2.0-bcn7mb/lib64:$LD_LIBRARY_PAT
 
 export CC=nvc
 export CXX=nvc++
-export CXXFLAGS="-std=c++17 -Minfo=all"
+export CXXFLAGS=" -std=c++17"
 
 export PREFIX="build-nvhpc-seq"
 

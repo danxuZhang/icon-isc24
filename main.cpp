@@ -65,9 +65,9 @@ int main(int argc, char *argv[]) {
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
       end_time - start_time);
 
-  io_muphys::write_fields(output_file, ncells, nlev, t, qv, qc, qi, qr, qs, qg);
   std::cout << "time taken : " << duration.count() << " milliseconds"
             << std::endl;
+  io_muphys::write_fields(output_file, ncells, nlev, t, qv, qc, qi, qr, qs, qg);
 
   if (std::getenv("MU_LOG_TIME")) {
     io_muphys::log_time(duration.count());
