@@ -34,9 +34,8 @@ struct t_qx_ptr {
   size_t sz;
 }; // pointer vector
 
-#pragma acc routine seq
 template<typename T>
-auto get_min_element(T* arr, size_t sz) -> T{
+inline auto get_min_element(T* arr, size_t sz) -> T{
   T min_ele = arr[0];
   for (size_t i = 0; i < sz; ++i) {
     if (arr[i] < min_ele) {

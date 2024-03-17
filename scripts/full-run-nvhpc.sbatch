@@ -19,8 +19,8 @@ export LD_LIBRARY_PATH=/sw/spack-levante/gcc-12.3.0-ab6j4u/lib64:$LD_LIBRARY_PAT
 spack load netcdf-cxx4@4.3.1
 spack load cdo@2.2.2
 
-export INPUT="20k.nc"
-# export INPUT="1500k.nc"
+# export INPUT="20k.nc"
+export INPUT="1500k.nc"
 
 # export ACC_TARGET="multicore"
 export ACC_TARGET="gpu"
