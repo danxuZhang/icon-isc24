@@ -128,7 +128,11 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   // wraps to the maximum value representable by size_t.
   auto loop1_start = std::chrono::steady_clock::now();
   size_t oned_vec_index;
-  for (size_t i = ke - 1; i < ke; --i) {
+  #pragma acc parallel 
+  #pragma acc loop seq 
+  for  (size_t it = 0; it < ke; ++it) {
+    const size_t i = ke - 1 - it;
+    #pragma acc loop private(oned_vec_index, jmx)
     for (size_t j = ivstart; j < ivend; j++) {
       oned_vec_index = i * ivend + j;
       if ((std::max({q[lqc].x[oned_vec_index], q[lqr].x[oned_vec_index],
@@ -137,15 +141,19 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
           ((t[oned_vec_index] < tfrz_het2) and
            (q[lqv].x[oned_vec_index] >
             qsat_ice_rho(t[oned_vec_index], rho[oned_vec_index])))) {
+        #pragma acc atomic capture 
+        {
+        jmx = jmx_;
         jmx_ = jmx_ + 1;
+        }
         ind_k[jmx] = i;
         ind_i[jmx] = j;
         is_sig_present[jmx] =
             std::max({q[lqs].x[oned_vec_index], q[lqi].x[oned_vec_index],
                       q[lqg].x[oned_vec_index]}) > qmin;
-        jmx = jmx_;
       }
 
+      #pragma acc loop seq
       for (size_t ix = 0; ix < np; ix++) {
         if (i == (ke - 1)) {
           kmin[j][qp_ind[ix]] = ke + 1;
