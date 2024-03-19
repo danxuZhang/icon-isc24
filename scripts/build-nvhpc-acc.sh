@@ -1,11 +1,10 @@
 #!/bin/bash
 
 module load nvhpc
-module load gcc/11.2.0-gcc-11.2.0
-
+# module load gcc/11.2.0-gcc-11.2.0
+module load gcc/.12.3.0-gcc-11.2.0-nvptx
+export LD_LIBRARY_PATH=/sw/spack-levante/gcc-12.3.0-ab6j4u/lib64:$LD_LIBRARY_PATH
 spack load netcdf-cxx4@4.3.1
-
-export LD_LIBRARY_PATH=/sw/spack-levante/gcc-11.2.0-bcn7mb/lib64:$LD_LIBRARY_PATH
 
 # export TARGET="host"
 export TARGET="multicore"

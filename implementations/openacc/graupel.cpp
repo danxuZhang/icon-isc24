@@ -100,7 +100,6 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   real_t cv, vc, eta, zeta, qvsi, qice, qliq, qtot, dvsw, dvsw0, dvsi, n_ice,
       m_ice, x_ice, n_snow, l_snow, ice_dep, e_int, stot, xrho;
 
-  real_t update[3]; // scratch array with output from precipitation step
   auto eflx = (real_t*) malloc(nvec * sizeof(real_t)); // internal energy flux from precipitation (W/m2 )
   real_t** vt = (real_t**) malloc(nvec * sizeof(real_t*));
   for (size_t i = 0; i < nvec; ++i) {
@@ -123,12 +122,11 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   size_t jmx = 0;
   size_t jmx_ = jmx;
 
+  size_t oned_vec_index;
   // The loop is intentionally i<nlev; since we are using an unsigned integer
   // data type, when i reaches 0, and you try to decrement further, (to -1), it
   // wraps to the maximum value representable by size_t.
-  auto loop1_start = std::chrono::steady_clock::now();
-  size_t oned_vec_index;
-  #pragma acc parallel 
+  #pragma acc parallel async
   #pragma acc loop seq 
   for  (size_t it = 0; it < ke; ++it) {
     const size_t i = ke - 1 - it;
@@ -167,17 +165,13 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       }
     }
   }
-  auto loop1_end = std::chrono::steady_clock::now();
-  auto loop1_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop1_end - loop1_start);
-  std::cout << "time for loop one: " << loop1_duration.count() << "ms" << std::endl;
 
-  auto loop2_start = std::chrono::steady_clock::now();
   size_t k, iv;
   real_t sx2x_sum;
-  // TODO parallelize, likely independent operations
-  #pragma acc parallel loop private(k, iv, oned_vec_index, dvsw, qvsi, dvsi, n_snow, l_snow) \
-                            private(n_ice, m_ice, x_ice, eta, ice_dep, dvsw0) \
-                            private(stot, qice, qliq, qtot, cv, sx2x_sum) 
+  #pragma acc parallel loop async \
+                      private(k, iv, oned_vec_index, dvsw, qvsi, dvsi, n_snow, l_snow) \
+                      private(n_ice, m_ice, x_ice, eta, ice_dep, dvsw0) \
+                      private(stot, qice, qliq, qtot, cv, sx2x_sum)
   for (size_t j = 0; j < jmx_; j++) {
     real_t sx2x[nx][nx];
     for (size_t i = 0; i < nx; ++i) {
@@ -329,19 +323,15 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
                  (lsc - (ci - cvv) * t[oned_vec_index])) /
             cv;
   }
-  auto loop2_end = std::chrono::steady_clock::now();
-  auto loop2_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop2_end - loop2_start);
-  std::cout << "time for loop two: " << loop2_duration.count() << "ms" << std::endl;
-
 
   size_t kp1;
   size_t k_end = (lrain) ? ke : kstart - 1;
-  auto loop3_start = std::chrono::steady_clock::now();
-  #pragma acc parallel 
+  #pragma acc parallel async
   #pragma acc loop seq 
   for (size_t k = kstart; k < k_end; k++) {
-    # pragma acc loop private(oned_vec_index, kp1, qliq, qice, e_int, zeta, xrho, vc, update)
+    # pragma acc loop private(oned_vec_index, kp1, qliq, qice, e_int, zeta, xrho, vc)
     for (size_t iv = ivstart; iv < ivend; iv++) {
+      real_t update[3]; // scratch array with output from precipitation step
       oned_vec_index = k * ivend + iv;
       if (k == kstart) {
         eflx[iv] = 0.0;
@@ -392,9 +382,8 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       }
     }
   }
-  auto loop3_end = std::chrono::steady_clock::now();
-  auto loop3_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop3_end - loop3_start);
-  std::cout << "time for loop three: " << loop3_duration.count() << "ms" << std::endl;
+
+  #pragma acc wait
 
   for (size_t i = 0; i < nvec; ++i) {
     free(vt[i]);
