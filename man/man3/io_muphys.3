@@ -1,0 +1,81 @@
+.TH "io_muphys" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+io_muphys
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "\fBusing\fP \fBNCreal_t\fP = \fBNcDouble\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBvoid\fP \fBparse_args\fP (std::string &\fBfile\fP, \fBsize_t\fP &\fBitime\fP, \fBreal_t\fP &\fBdt\fP, \fBreal_t\fP &\fBqnc\fP, \fBint\fP \fBargc\fP, \fBchar\fP **\fBargv\fP)"
+.br
+.ti -1c
+.RI "\fBvoid\fP \fBinput_vector\fP (\fBNcFile\fP &\fBdatafile\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBv\fP, \fBconst\fP std::string \fBinput\fP, \fBsize_t\fP &\fBncells\fP, \fBsize_t\fP &\fBnlev\fP, \fBsize_t\fP \fBitime\fP)"
+.br
+.ti -1c
+.RI "\fBvoid\fP \fBinput_vector\fP (\fBNcFile\fP &\fBdatafile\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBv\fP, \fBconst\fP std::string \fBinput\fP, \fBsize_t\fP &\fBncells\fP, \fBsize_t\fP &\fBnlev\fP)"
+.br
+.ti -1c
+.RI "\fBvoid\fP \fBoutput_vector\fP (\fBNcFile\fP &\fBdatafile\fP, \fBarray_1d_t\fP< \fBNcDim\fP > &\fBdims\fP, \fBconst\fP std::string \fBoutput\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBv\fP, \fBsize_t\fP &\fBncells\fP, \fBsize_t\fP &\fBnlev\fP, \fBint\fP &\fBdeflate_level\fP)"
+.br
+.ti -1c
+.RI "\fBvoid\fP \fBoutput_vector\fP (\fBNcFile\fP &\fBdatafile\fP, \fBarray_1d_t\fP< \fBNcDim\fP > &\fBdims\fP, \fBconst\fP std::string \fBoutput\fP, std::map< std::string, \fBNcVarAtt\fP >, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBv\fP, \fBsize_t\fP &\fBncells\fP, \fBsize_t\fP &\fBnlev\fP, \fBint\fP &\fBdeflate_level\fP)"
+.br
+.ti -1c
+.RI "\fBvoid\fP \fBread_fields\fP (\fBconst\fP std::string \fBinput_file\fP, \fBsize_t\fP &\fBitime\fP, \fBsize_t\fP &\fBncells\fP, \fBsize_t\fP &\fBnlev\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBz\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBt\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &p, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBrho\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqv\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqc\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqi\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqr\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqs\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqg\fP)"
+.br
+.ti -1c
+.RI "\fBvoid\fP \fBwrite_fields\fP (\fBconst\fP \fBstring\fP \fBoutput_file\fP, \fBsize_t\fP &\fBncells\fP, \fBsize_t\fP &\fBnlev\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBt\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqv\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqc\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqi\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqr\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqs\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqg\fP)"
+.br
+.ti -1c
+.RI "\fBvoid\fP \fBwrite_fields\fP (\fBconst\fP \fBstring\fP \fBoutput_file\fP, \fBconst\fP \fBstring\fP \fBinput_file\fP, \fBsize_t\fP &\fBncells\fP, \fBsize_t\fP &\fBnlev\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBt\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqv\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqc\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqi\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqr\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqs\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqg\fP)"
+.br
+.ti -1c
+.RI "\fBvoid\fP \fBlog_time\fP (\fBint64_t\fP \fBvalue\fP)"
+.br
+.in -1c
+.SH "Typedef Documentation"
+.PP 
+.SS "\fBusing\fP \fBio_muphys::NCreal_t\fP = \fBNcDouble\fP"
+
+.PP
+Definition at line \fB25\fP of file \fBio\&.hpp\fP\&.
+.SH "Function Documentation"
+.PP 
+.SS "\fBvoid\fP io_muphys::input_vector (\fBNcFile\fP & datafile, \fBarray_1d_t\fP< \fBreal_t\fP > & v, \fBconst\fP std::string input, \fBsize_t\fP & ncells, \fBsize_t\fP & nlev)"
+
+.SS "\fBvoid\fP io_muphys::input_vector (\fBNcFile\fP & datafile, \fBarray_1d_t\fP< \fBreal_t\fP > & v, \fBconst\fP std::string input, \fBsize_t\fP & ncells, \fBsize_t\fP & nlev, \fBsize_t\fP itime)"
+
+.SS "\fBvoid\fP io_muphys::log_time (\fBint64_t\fP value)"
+
+.PP
+Definition at line \fB289\fP of file \fBio\&.cpp\fP\&.
+.SS "\fBvoid\fP io_muphys::output_vector (\fBNcFile\fP & datafile, \fBarray_1d_t\fP< \fBNcDim\fP > & dims, \fBconst\fP std::string output, \fBarray_1d_t\fP< \fBreal_t\fP > & v, \fBsize_t\fP & ncells, \fBsize_t\fP & nlev, \fBint\fP & deflate_level)"
+
+.SS "\fBvoid\fP io_muphys::output_vector (\fBNcFile\fP & datafile, \fBarray_1d_t\fP< \fBNcDim\fP > & dims, \fBconst\fP std::string output, std::map< std::string, \fBNcVarAtt\fP >, \fBarray_1d_t\fP< \fBreal_t\fP > & v, \fBsize_t\fP & ncells, \fBsize_t\fP & nlev, \fBint\fP & deflate_level)"
+
+.SS "\fBvoid\fP io_muphys::parse_args (std::string & file, \fBsize_t\fP & itime, \fBreal_t\fP & dt, \fBreal_t\fP & qnc, \fBint\fP argc, \fBchar\fP ** argv)"
+
+.SS "\fBvoid\fP io_muphys::read_fields (\fBconst\fP std::string input_file, \fBsize_t\fP & itime, \fBsize_t\fP & ncells, \fBsize_t\fP & nlev, \fBarray_1d_t\fP< \fBreal_t\fP > & z, \fBarray_1d_t\fP< \fBreal_t\fP > & t, \fBarray_1d_t\fP< \fBreal_t\fP > & p, \fBarray_1d_t\fP< \fBreal_t\fP > & rho, \fBarray_1d_t\fP< \fBreal_t\fP > & qv, \fBarray_1d_t\fP< \fBreal_t\fP > & qc, \fBarray_1d_t\fP< \fBreal_t\fP > & qi, \fBarray_1d_t\fP< \fBreal_t\fP > & qr, \fBarray_1d_t\fP< \fBreal_t\fP > & qs, \fBarray_1d_t\fP< \fBreal_t\fP > & qg)"
+
+.SS "\fBvoid\fP io_muphys::write_fields (\fBconst\fP \fBstring\fP output_file, \fBconst\fP \fBstring\fP input_file, \fBsize_t\fP & ncells, \fBsize_t\fP & nlev, \fBarray_1d_t\fP< \fBreal_t\fP > & t, \fBarray_1d_t\fP< \fBreal_t\fP > & qv, \fBarray_1d_t\fP< \fBreal_t\fP > & qc, \fBarray_1d_t\fP< \fBreal_t\fP > & qi, \fBarray_1d_t\fP< \fBreal_t\fP > & qr, \fBarray_1d_t\fP< \fBreal_t\fP > & qs, \fBarray_1d_t\fP< \fBreal_t\fP > & qg)"
+
+.PP
+Definition at line \fB241\fP of file \fBio\&.cpp\fP\&.
+.SS "\fBvoid\fP io_muphys::write_fields (\fBconst\fP \fBstring\fP output_file, \fBsize_t\fP & ncells, \fBsize_t\fP & nlev, \fBarray_1d_t\fP< \fBreal_t\fP > & t, \fBarray_1d_t\fP< \fBreal_t\fP > & qv, \fBarray_1d_t\fP< \fBreal_t\fP > & qc, \fBarray_1d_t\fP< \fBreal_t\fP > & qi, \fBarray_1d_t\fP< \fBreal_t\fP > & qr, \fBarray_1d_t\fP< \fBreal_t\fP > & qs, \fBarray_1d_t\fP< \fBreal_t\fP > & qg)"
+
+.PP
+Definition at line \fB171\fP of file \fBio\&.cpp\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

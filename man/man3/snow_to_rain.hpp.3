@@ -1,0 +1,49 @@
+.TH "core/transitions/snow_to_rain.hpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/transitions/snow_to_rain.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include '\&.\&./common/constants\&.hpp'\fP
+.br
+\fR#include '\&.\&./common/types\&.hpp'\fP
+.br
+\fR#include <cmath>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBtransition\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBtransition::snow_to_rain\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP p, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBdvsw0\fP, \fBreal_t\fP \fBqs\fP)"
+.br
+.RI "Melting of snow to form rain\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::c1_sr\fP = 79\&.6863"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::c2_sr\fP = 0\&.612654\fBE\fP\-3"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::a_sr\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::b_sr\fP"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

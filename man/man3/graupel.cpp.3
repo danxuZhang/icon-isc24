@@ -1,0 +1,247 @@
+.TH "implementations/openacc/graupel.cpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+implementations/openacc/graupel.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'core/common/graupel\&.hpp'\fP
+.br
+\fR#include 'types\&.hpp'\fP
+.br
+\fR#include <algorithm>\fP
+.br
+\fR#include <iostream>\fP
+.br
+\fR#include <numeric>\fP
+.br
+\fR#include <chrono>\fP
+.br
+\fR#include <cmath>\fP
+.br
+\fR#include <openacc\&.h>\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBt_qx_ptr\fP"
+.br
+.RI "Holds pointers to data arrays and their size for various hydrometeor types\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "template<\fBtypename\fP \fBT\fP > \fBauto\fP \fBget_min_element\fP (\fBT\fP *\fBarr\fP, \fBsize_t\fP sz) \-> \fBT\fP"
+.br
+.RI "Finds the minimum element in an array\&. "
+.ti -1c
+.RI "\fBvoid\fP \fBprecip\fP (\fBconst\fP \fBreal_t\fP(&\fBparams\fP)[3], \fBreal_t\fP(&precip)[3], \fBreal_t\fP \fBzeta\fP, \fBreal_t\fP \fBvc\fP, \fBreal_t\fP \fBflx\fP, \fBreal_t\fP \fBvt\fP, \fBreal_t\fP \fBq\fP, \fBreal_t\fP \fBq_kp1\fP, \fBreal_t\fP \fBrho\fP)"
+.br
+.RI "Simulates the update of precipitation in a grid cell over a time step\&. "
+.ti -1c
+.RI "\fBvoid\fP \fBgraupel\fP (\fBsize_t\fP &\fBnvec\fP, \fBsize_t\fP &\fBke\fP, \fBsize_t\fP &\fBivstart\fP, \fBsize_t\fP &\fBivend\fP, \fBsize_t\fP &\fBkstart\fP, \fBreal_t\fP &\fBdt\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBdz\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBt\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBrho\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &p, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqv\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqc\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqi\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqr\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqs\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBqg\fP, \fBreal_t\fP &\fBqnc\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBprr_gsp\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBpri_gsp\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBprs_gsp\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBprg_gsp\fP, \fBarray_1d_t\fP< \fBreal_t\fP > &\fBpflx\fP)"
+.br
+.RI "Models the dynamics of graupel, snow, and ice precipitation within a model grid\&. "
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "template<\fBtypename\fP \fBT\fP > \fBauto\fP get_min_element (\fBT\fP * arr, \fBsize_t\fP sz) \-> \fBT\fP\fR [inline]\fP"
+
+.PP
+Finds the minimum element in an array\&. This template function iterates over an array of any type that supports comparison and identifies the minimum value contained within the array\&. It's a generic function that can operate on arrays of integers, floats, or any other comparable types\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIarr\fP Pointer to the first element of the array to be searched\&. 
+.br
+\fIsz\fP The size of the array\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The minimum element found in the array\&. 
+.RE
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP The type of the elements in the array\&. This type must support comparison operations\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB76\fP of file \fBgraupel\&.cpp\fP\&.
+.SS "\fBvoid\fP graupel (\fBsize_t\fP & nvec, \fBsize_t\fP & ke, \fBsize_t\fP & ivstart, \fBsize_t\fP & ivend, \fBsize_t\fP & kstart, \fBreal_t\fP & dt, \fBarray_1d_t\fP< \fBreal_t\fP > & dz, \fBarray_1d_t\fP< \fBreal_t\fP > & t, \fBarray_1d_t\fP< \fBreal_t\fP > & rho, \fBarray_1d_t\fP< \fBreal_t\fP > & p, \fBarray_1d_t\fP< \fBreal_t\fP > & qv, \fBarray_1d_t\fP< \fBreal_t\fP > & qc, \fBarray_1d_t\fP< \fBreal_t\fP > & qi, \fBarray_1d_t\fP< \fBreal_t\fP > & qr, \fBarray_1d_t\fP< \fBreal_t\fP > & qs, \fBarray_1d_t\fP< \fBreal_t\fP > & qg, \fBreal_t\fP & qnc, \fBarray_1d_t\fP< \fBreal_t\fP > & prr_gsp, \fBarray_1d_t\fP< \fBreal_t\fP > & pri_gsp, \fBarray_1d_t\fP< \fBreal_t\fP > & prs_gsp, \fBarray_1d_t\fP< \fBreal_t\fP > & prg_gsp, \fBarray_1d_t\fP< \fBreal_t\fP > & pflx)"
+
+.PP
+Models the dynamics of graupel, snow, and ice precipitation within a model grid\&. Simulates the microphysical processes involving graupel\&.
+.PP
+This function simulates the microphysical processes affecting graupel, snow, and ice within a grid-based model of the atmosphere\&. It accounts for the formation, growth, and fallout of these hydrometeors through the atmospheric column\&. The function updates the state of each cell in terms of hydrometeor mass, flux, and related properties, considering atmospheric conditions like temperature and density\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fInvec\fP Number of horizontal points 
+.br
+\fIke\fP Number of grid points in vertical direction 
+.br
+\fIivstart\fP Start index for horizontal direction 
+.br
+\fIivend\fP End index for horizontal direction 
+.br
+\fIkstart\fP Start index for vertical direction 
+.br
+\fIdt\fP Time step for integration of microphysics (s) 
+.br
+\fIdz\fP Layer thickness of full levels (m) 
+.br
+\fIt\fP Temperature in Kelvin 
+.br
+\fIrho\fP Density of moist air (kg/m3) 
+.br
+\fIp\fP Pressure (Pa) 
+.br
+\fIqv\fP Specific water vapor content (kg/kg) 
+.br
+\fIqc\fP Specific cloud water content (kg/kg) 
+.br
+\fIqi\fP Specific cloud ice content (kg/kg) 
+.br
+\fIqr\fP Specific rain content (kg/kg) 
+.br
+\fIqs\fP Specific snow content kg/kg) 
+.br
+\fIqg\fP Specific graupel content (kg/kg) 
+.br
+\fIqnc\fP Cloud number concentration 
+.br
+\fIprr_gsp\fP Precipitation rate of rain, grid-scale (kg/(m2*s)) 
+.br
+\fIpri_gsp\fP Precipitation rate of ice, grid-scale (kg/(m2*s)) 
+.br
+\fIprs_gsp\fP Precipitation rate of snow, grid-scale (kg/(m2*s)) 
+.br
+\fIprg_gsp\fP Precipitation rate of graupel, grid-scale (kg/(m2*s)) 
+.br
+\fIpflx\fP Total precipitation flux
+.RE
+.PP
+The function operates by first identifying cells where significant hydrometeor processes are expected to occur in loop 1, then applying microphysical transformations for significant cells in loops 2 and finally updateshydrometeor states (such as mass and number concentration) in loop 3\&. These updates are based on ambient atmospheric conditions and the interactions between different hydrometeor types\&. Loop 1
+.PP
+Traverses the simulation grid to identify cells where significant atmospheric processes are occurring\&. by iterating over the vertical and horizontal dimensions of the simulation grid, then identifying grid cells where significant atmospheric processes are expected to occur\&. The loop starts from the top layer and moves downward, slicing horizontal layers vertically\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIke\fP The number of vertical levels in the simulation grid\&. 
+.br
+\fIivstart\fP The starting index for the horizontal dimension\&. 
+.br
+\fIivend\fP The ending index for the horizontal dimension\&. 
+.br
+\fIq\fP An array of \fBt_qx_ptr\fP objects representing different hydrometeor types and their properties\&. 
+.br
+\fIt\fP An array holding the temperature values for each grid cell\&. 
+.br
+\fIrho\fP An array holding the air density values for each grid cell\&. 
+.br
+\fIjmx_\fP A reference to the variable that keeps track of the number of significant cells found\&. 
+.br
+\fIind_k\fP An array to store the vertical indices of significant cells\&. 
+.br
+\fIind_i\fP An array to store the horizontal indices of significant cells\&. 
+.br
+\fIis_sig_present\fP A boolean array to record whether snow, ice, or graupel is present in each significant cell\&. 
+.br
+\fIkmin\fP A 2D array to track the lowest vertical level at which condensate is present for each vector\&.
+.RE
+.PP
+Simulates the microphysical processes within the atmosphere at significant cells\&.
+.PP
+This loop iterates over the significant cells identified in loop 1 and performs calculations to model the microphysical processes occurring within those cells\&. It considers various atmospheric variables and hydrometeor interactions to update the state of each significant cell\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIjmx_\fP The number of significant cells found in loop 1\&. 
+.br
+\fIind_k\fP An array containing the vertical indices of significant cells\&. 
+.br
+\fIind_i\fP An array containing the horizontal indices of significant cells\&. 
+.br
+\fIp\fP An array holding the pressure values for each grid cell\&. 
+.br
+\fIqnc\fP The cloud number concentration\&. 
+.br
+\fIdt\fP The time step for integration of microphysics\&.
+.RE
+.PP
+Simulates vertical transport and captures feedback between precipitation and atmospheric conditions\&.
+.PP
+This loop traverses each vertical and horizontal cell of the simulation grid, simulating the vertical transport of precipitation and capturing the feedback between precipitation-phase changes and atmospheric conditions\&. It adjusts hydrometeor concentrations and velocities, and updates temperature based on latent heat exchange\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIkstart\fP The starting index for the vertical dimension\&. 
+.br
+\fIk_end\fP The ending index for the vertical dimension\&. 
+.br
+\fIivstart\fP The starting index for the horizontal dimension\&. 
+.br
+\fIivend\fP The ending index for the horizontal dimension\&. 
+.br
+\fIdz\fP An array holding the layer thickness of full levels\&. 
+.br
+\fIeflx\fP An array to store the internal energy flux associated with precipitation within each vector\&. 
+.br
+\fIpflx\fP An array to store the total precipitation flux\&. 
+.br
+\fIkmin\fP A 2D array tracking the lowest vertical level at which condensate is present for each vector\&. 
+.br
+\fIvt\fP A 2D array storing the terminal velocity of precipitation particles in each model cell\&. 
+.br
+\fIdt\fP The time step for integration of microphysics\&.
+.RE
+.PP
+
+.PP
+Definition at line \fB174\fP of file \fBgraupel\&.cpp\fP\&.
+.SS "\fBvoid\fP precip (\fBconst\fP \fBreal_t\fP(&) params[3], \fBreal_t\fP(&) precip[3], \fBreal_t\fP zeta, \fBreal_t\fP vc, \fBreal_t\fP flx, \fBreal_t\fP vt, \fBreal_t\fP q, \fBreal_t\fP q_kp1, \fBreal_t\fP rho)"
+
+.PP
+Simulates the update of precipitation in a grid cell over a time step\&. This function models the dynamics of precipitation within a grid cell, including the accumulation or reduction of precipitation mass, the flux of precipitation into the cell from the cell directly above, and the calculation of terminal velocity of precipitation particles\&. It takes into account the physical properties of the air and precipitation, such as air density and fall speed parameters, to update the state of precipitation in the cell and its impact on adjacent cells\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIparams\fP An array of real_t containing parameters related to the fall speed of precipitation\&. 
+.br
+\fIprecip\fP An array of real_t where the updated precipitation values will be stored\&.
+.IP "\(bu" 2
+precip[0] will contain the updated specific mass of hydrometeors (how much precipitation is present)\&.
+.IP "\(bu" 2
+precip[1] will contain the flux of precipitation into the cell from above\&.
+.IP "\(bu" 2
+precip[2] will contain the updated terminal velocity of the precipitation particles\&. 
+.PP
+.br
+\fIzeta\fP The ratio of the time step for integration (dt) to twice the vertical distance between grid cells (2dz)\&. 
+.br
+\fIvc\fP The correction factor for the fall speed, which is state dependent (e\&.g\&., adjusted for local atmospheric conditions)\&. 
+.br
+\fIflx\fP The flux of precipitation entering the cell from the cell directly above at the start of the time step\&. 
+.br
+\fIvt\fP The terminal velocity of precipitation particles (assumed constant for the time step)\&. 
+.br
+\fIq\fP The specific mass of hydrometeors (precipitation) in the cell at the start of the time step\&. 
+.br
+\fIq_kp1\fP The specific mass of hydrometeors in the cell directly below at the start of the time step\&. 
+.br
+\fIrho\fP The density of air in the cell\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB110\fP of file \fBgraupel\&.cpp\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

@@ -1,0 +1,44 @@
+.TH "core/transitions/snow_to_graupel.hpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/transitions/snow_to_graupel.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include '\&.\&./common/constants\&.hpp'\fP
+.br
+\fR#include '\&.\&./common/types\&.hpp'\fP
+.br
+\fR#include <cmath>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBtransition\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBtransition::snow_to_graupel\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqc\fP, \fBreal_t\fP \fBqs\fP)"
+.br
+.RI "Calculates the conversion rate from snow to graupel through riming\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::a_rim_ct\fP = 0\&.5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::b_rim_ct\fP = \fBstatic_cast\fP<\fBreal_t\fP>(3\&.0) / \fBstatic_cast\fP<\fBreal_t\fP>(4\&.0)"
+.br
+.RI "Constants in riming formula\&. "
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

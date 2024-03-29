@@ -1,0 +1,49 @@
+.TH "core/transitions/ice_to_graupel.hpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/transitions/ice_to_graupel.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include '\&.\&./common/constants\&.hpp'\fP
+.br
+\fR#include '\&.\&./common/types\&.hpp'\fP
+.br
+\fR#include <cmath>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBtransition\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBtransition::ice_to_graupel\fP (\fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqr\fP, \fBreal_t\fP \fBqg\fP, \fBreal_t\fP \fBqi\fP, \fBreal_t\fP \fBsticking_eff\fP)"
+.br
+.RI "Calculates the aggregation of ice by graupel\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::a_ct\fP = 1\&.72"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::b_ct\fP = \fBstatic_cast\fP<\fBreal_t\fP>(7\&.0) / \fBstatic_cast\fP<\fBreal_t\fP>(8\&.0)"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::c_agg_ct\fP = 2\&.46"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::b_agg_ct\fP = 0\&.94878"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

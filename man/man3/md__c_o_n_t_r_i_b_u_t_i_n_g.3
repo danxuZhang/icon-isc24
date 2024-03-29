@@ -1,0 +1,17 @@
+.TH "md__c_o_n_t_r_i_b_u_t_i_n_g" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+md__c_o_n_t_r_i_b_u_t_i_n_g \- Formatting 
+.PP
+clang-format is used to enforce a consistent code style\&. A \&.clang-format file is provided in the repository\&. To format all files in place you can use:
+.PP
+\fRclang-format -i -style=file core/**/*\&.cpp core/**/*\&.hpp implementations/**/*\&.cpp implementations/**/*\&.hpp io/**/*\&.cpp io/**/*\&.hpp test/*\&.cc \fBmain\&.cpp\fP\fP\&.
+.PP
+Because development concentrates mainly on \fBmain\&.cpp\fP and the implementations, this shortened command can also be used:
+.PP
+\fRclang-format -i -style=file implementations/**/*\&.cpp implementations/**/*\&.hpp test/*\&.cc \fBmain\&.cpp\fP\fP\&.
+.PP
+We have to specify the folders because e\&.g\&. \fRseq\fP will build their files in a subfolder as well and we don't want to format their files\&.
+.PP
+It is recommended to create a precommit file for Git so the changes are formatted automatically\&. For this we have to create \&.git/hook/pre-commit\&. We also need to make sure that clang-format is installed\&. A simple example would be: `#!/bin/bash echo Running clang-format on added files\&. for FILE in $(git diff --cached --name-only | grep -E '\&.*.(c|cpp|h|hpp)\fB\fP') do clang-format -i $FILE done \fR Make sure to mark the file as executable with e\&.g\&.\fPchmod +x \&.git/hook/pre-commit`\&. 

@@ -1,0 +1,53 @@
+.TH "core/properties/snow_lambda.hpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/properties/snow_lambda.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include '\&.\&./common/constants\&.hpp'\fP
+.br
+\fR#include '\&.\&./common/types\&.hpp'\fP
+.br
+\fR#include <cmath>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBproperty\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBproperty::snow_lambda\fP (\fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqs\fP, \fBreal_t\fP \fBns\fP)"
+.br
+.RI "Calculates the snow lambda parameter\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::a2\fP"
+.br
+.RI "(with ams*gam(bms+1\&.0_wp) where gam(3) = 2) "
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::lmd_0\fP = 1\&.0e+10"
+.br
+.RI "no snow value of lambda "
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::bx\fP"
+.br
+.RI "Constant = 1\&.0 / (\fBgraupel_ct::bms\fP + 1\&.0) "
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::qsmin_\fP = 0\&.0e\-6"
+.br
+.RI "Minimum value of snow specific mass used in the calculation of snow lambda (kg/kg)\&. "
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

@@ -17,9 +17,9 @@
 
 namespace property {
 
-constexpr real_t tmin = thermodyn::tmelt - static_cast<real_t>(40.);
-constexpr real_t tmax = thermodyn::tmelt;
-constexpr real_t qsmin = 2.0e-6;
+constexpr real_t tmin = thermodyn::tmelt - static_cast<real_t>(40.); ///< Minimum temperature
+constexpr real_t tmax = thermodyn::tmelt; ///< Maximum temperature
+constexpr real_t qsmin = 2.0e-6; ///< Minimum value of snow specific mass
 constexpr real_t xa1 = -1.65e+0;
 constexpr real_t xa2 = 5.45e-2;
 constexpr real_t xa3 = 3.27e-4;
@@ -37,12 +37,18 @@ constexpr real_t n0s6 = static_cast<real_t>(1.e2) * n0s1;
 constexpr real_t n0s7 = 1.e9;
 
 /**
- * @brief TODO
- * @param [in] t Temperature
- * @param [in] rho Ambient air density
- * @param [in] qs Snow specific mass
- * @return Snow number
- */
+* @brief Calculates the snow number concentration.
+*
+* This function calculates the snow number concentration based on the ambient temperature,
+* air density, and snow specific mass. The calculation involves several empirical constants
+* and coefficients. If the snow specific mass is less than or equal to graupel_ct::qmin,
+* a constant value of n0s0 is returned.
+*
+* @param [in] t Ambient temperature (K).
+* @param [in] rho Ambient air density (kg/m^3).
+* @param [in] qs Snow specific mass (kg/kg).
+* @return The snow number concentration (1/kg).
+*/
 TARGET real_t snow_number(real_t t, real_t rho, real_t qs) {
 
   if (qs > graupel_ct::qmin) {

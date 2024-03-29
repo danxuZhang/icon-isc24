@@ -1,0 +1,51 @@
+.TH "core/transitions/graupel_to_rain.hpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/transitions/graupel_to_rain.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include '\&.\&./common//types\&.hpp'\fP
+.br
+\fR#include '\&.\&./common/constants\&.hpp'\fP
+.br
+\fR#include <cmath>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBtransition\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBtransition::graupel_to_rain\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP p, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBdvsw0\fP, \fBreal_t\fP \fBqg\fP)"
+.br
+.RI "Melting of graupel to form rain\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::c1_melt\fP = 12\&.31698"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::c2_melt\fP = 7\&.39441\fBe\fP\-05"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::a_melt\fP"
+.br
+.RI "melting prefactor "
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::b_melt\fP"
+.br
+.RI "melting exponent "
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

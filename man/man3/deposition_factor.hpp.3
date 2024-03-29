@@ -1,0 +1,47 @@
+.TH "core/properties/deposition_factor.hpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/properties/deposition_factor.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include '\&.\&./common/constants\&.hpp'\fP
+.br
+\fR#include '\&.\&./common/types\&.hpp'\fP
+.br
+\fR#include <cmath>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBproperty\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBproperty::deposition_factor\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBqvsi\fP)"
+.br
+.RI "Calculates the deposition factor\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::kappa\fP = 2\&.40e\-2"
+.br
+.RI "thermal conductivity of dry air "
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::b\fP = 1\&.94"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::a\fP = \fBthermodyn::als\fP * \fBthermodyn::als\fP / (\fBkappa\fP * \fBthermodyn::rv\fP)"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.
