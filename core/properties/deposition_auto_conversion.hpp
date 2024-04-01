@@ -17,16 +17,21 @@
 
 namespace property {
 
-constexpr real_t m0_s = 3.0e-9; // initial mass of snow crystals
-constexpr real_t b_dep = static_cast<real_t>(2.0) / static_cast<real_t>(3.0);
-constexpr real_t xcrit = 1.0; // threshold parameter
+constexpr real_t m0_s = 3.0e-9; ///< initial mass of snow crystals
+constexpr real_t b_dep = static_cast<real_t>(2.0) / static_cast<real_t>(3.0); ///< Exponent for ice deposition autoconversion.
+constexpr real_t xcrit = 1.0; ///< threshold parameter
 
 /**
- * @brief TODO
- * @param [in] qi Ice specific mass
- * @param [in] m_ice Ice crystal mass
- * @param [in] ice_dep Rate of ice deposition (some to snow)
- * @return TODO
+ * @brief Calculates the rate of ice deposition autoconversion.
+ *
+ * This function calculates the rate at which ice is converted to snow through
+ * deposition autoconversion. It takes into account the ice specific mass,
+ * ice crystal mass, and the rate of ice deposition.
+ *
+ * @param [in] qi Ice specific mass (kg/kg).
+ * @param [in] m_ice Ice crystal mass (kg).
+ * @param [in] ice_dep Rate of ice deposition (kg/kg/s).
+ * @return The rate of ice deposition autoconversion (kg/kg/s).
  */
 TARGET real_t deposition_auto_conversion(real_t qi, real_t m_ice,
                                          real_t ice_dep) {

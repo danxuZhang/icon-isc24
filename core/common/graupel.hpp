@@ -42,7 +42,12 @@
 #include "../properties/vel_scale_factor.hpp"
 
 /**
- * @brief
+ * @brief Simulates the microphysical processes involving graupel.
+ *
+ * This function simulates the microphysical processes involving graupel, including interactions
+ * with other hydrometeor types such as cloud water, rain, snow, and ice. It calculates the
+ * production and depletion rates of graupel and updates the specific masses of the hydrometeors
+ * and the temperature.
  *
  * @param [in] nvec Number of horizontal points
  * @param [in] ke Number of grid points in vertical direction

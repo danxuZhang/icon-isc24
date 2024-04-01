@@ -18,11 +18,18 @@
 namespace property {
 
 /**
- * @brief TODO
- * @param [in] density TODO
- * @param [in] params TODO
- * @return Fall speed
- */
+* @brief Calculates the fall speed of hydrometeors.
+*
+* This function calculates the fall speed of hydrometeors based on their density
+* and a set of parameters. The fall speed is determined using a power law relationship.
+*
+* @param [in] density The density of the hydrometeors (kg/m^3).
+* @param [in] params An array of parameters used in the fall speed calculation.
+*                    - params[0]: Coefficient of the power law relationship.
+*                    - params[1]: Exponent of the power law relationship.
+*                    - params[2]: Offset added to the density.
+* @return The fall speed of the hydrometeors (m/s).
+*/
 template <typename array_t>
 TARGET real_t fall_speed(real_t density, array_t params) {
   return params[0] * pow((density + params[2]), params[1]);

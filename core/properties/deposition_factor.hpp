@@ -17,15 +17,20 @@
 
 namespace property {
 
-constexpr real_t kappa = 2.40e-2; // thermal conductivity of dry air
-constexpr real_t b = 1.94;
-constexpr real_t a = thermodyn::als * thermodyn::als / (kappa * thermodyn::rv);
+constexpr real_t kappa = 2.40e-2; ///< thermal conductivity of dry air
+constexpr real_t b = 1.94; 
+constexpr real_t a = thermodyn::als * thermodyn::als / (kappa * thermodyn::rv); 
 
 /**
- * @brief TODO
- * @param [in] t Temperature
- * @param [in] qvsi Saturation (ice) specific vapor mass
- * @return Deposition factor
+ * @brief Calculates the deposition factor.
+ *
+ * The deposition factor is a dimensionless quantity that represents the efficiency
+ * of ice deposition growth. It is calculated based on temperature and saturation
+ * specific vapor mass over ice.
+ *
+ * @param [in] t Temperature (K).
+ * @param [in] qvsi Saturation specific vapor mass over ice (kg/kg).
+ * @return The deposition factor (dimensionless).
  */
 TARGET real_t deposition_factor(real_t t, real_t qvsi) {
   real_t cx = static_cast<real_t>(2.22e-5) * pow(thermodyn::tmelt, (-b)) *

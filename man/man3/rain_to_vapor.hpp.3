@@ -1,0 +1,61 @@
+.TH "core/transitions/rain_to_vapor.hpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/transitions/rain_to_vapor.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include '\&.\&./common/constants\&.hpp'\fP
+.br
+\fR#include '\&.\&./common/types\&.hpp'\fP
+.br
+\fR#include <cmath>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBtransition\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBtransition::rain_to_vapor\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqc\fP, \fBreal_t\fP \fBqr\fP, \fBreal_t\fP \fBdvsw\fP, \fBreal_t\fP \fBdt\fP)"
+.br
+.RI "Calculates the mass transfer from rain to water vapor (evaporation) "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::b1_rv\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::b2_rv\fP = 0\&.55555"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::c1_rv\fP = 0\&.61"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::c2_rv\fP = \-0\&.0163"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::c3_rv\fP = 1\&.111\fBe\fP\-4"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::a1_rv\fP = 1\&.536\fBe\fP\-3"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::a2_rv\fP = 1\&.0E+0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::a3_rv\fP"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

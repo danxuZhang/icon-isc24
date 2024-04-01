@@ -1,0 +1,105 @@
+.TH "core/properties/thermo.hpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/properties/thermo.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <cmath>\fP
+.br
+\fR#include '\&.\&./common/constants\&.hpp'\fP
+.br
+\fR#include '\&.\&./common/types\&.hpp'\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBthermo\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBthermo::internal_energy\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBqv\fP, \fBreal_t\fP \fBqliq\fP, \fBreal_t\fP \fBqice\fP, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBdz\fP)"
+.br
+.RI "Calculates the internal energy of a system\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBthermo::T_from_internal_energy\fP (\fBreal_t\fP \fBU\fP, \fBreal_t\fP \fBqv\fP, \fBreal_t\fP \fBqliq\fP, \fBreal_t\fP \fBqice\fP, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBdz\fP)"
+.br
+.RI "Calculates the temperature from the internal energy of a system\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBthermo::specific_humidity\fP (\fBreal_t\fP \fBpvapor\fP, \fBreal_t\fP \fBptotal\fP)"
+.br
+.RI "Calculates the specific humidity from vapor pressure and total pressure\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBthermo::sat_pres_water\fP (\fBreal_t\fP \fBt\fP)"
+.br
+.RI "Calculates the saturation pressure over water\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBthermo::sat_pres_ice\fP (\fBreal_t\fP \fBt\fP)"
+.br
+.RI "Calculates saturation pressure over ice\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBthermo::qsat_rho\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBrho\fP)"
+.br
+.RI "Calculates saturation vapor pressure (over liquid) at constant density\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBthermo::qsat_ice_rho\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBrho\fP)"
+.br
+.RI "Saturation vapor pressure (over ice) at constant density\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBthermo::dqsatdT_rho\fP (\fBreal_t\fP \fBqs\fP, \fBreal_t\fP \fBt\fP)"
+.br
+.RI "Computes the derivative d(qsat_rho)/dT\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBthermo::dqsatdT\fP (\fBreal_t\fP \fBqs\fP, \fBreal_t\fP \fBt\fP)"
+.br
+.RI "Computes the derivative of saturation vapor pressure (over liquid) with respect to temperature\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBthermo::dqsatdT_ice\fP (\fBreal_t\fP \fBqs\fP, \fBreal_t\fP \fBt\fP)"
+.br
+.RI "Computes the derivative of saturation vapor pressure (over ice) with respect to temperature\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBthermo::vaporization_energy\fP (\fBreal_t\fP \fBt\fP)"
+.br
+.RI "Computes internal energy of vaporization\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBthermo::sublimation_energy\fP (\fBreal_t\fP \fBt\fP)"
+.br
+.RI "Computes internal energy of sublimation\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermo::c1es\fP = 610\&.78"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermo::c2es\fP = \fBc1es\fP * \fBthermodyn::rd\fP / \fBthermodyn::rv\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermo::c3les\fP = 17\&.269"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermo::c3ies\fP = 21\&.875"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermo::c4les\fP = 35\&.86"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermo::c4ies\fP = 7\&.66"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermo::c5les\fP = \fBc3les\fP * (\fBthermodyn::tmelt\fP \- \fBc4les\fP)"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermo::c5ies\fP = \fBc3ies\fP * (\fBthermodyn::tmelt\fP \- \fBc4ies\fP)"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

@@ -23,14 +23,15 @@ constexpr real_t c_agg_ct = 2.46;
 constexpr real_t b_agg_ct = 0.94878;
 
 /**
- * @brief TODO
- * @param [in] rho Density
- * @param [in] qr Rain specific mass
- * @param [in] qg Graupel specific mass
- * @param [in] qi Ice specific mass
- * @param [in] sticking_eff Sticking effiency
- * @return aggregation of ice by graupel
- */
+* @brief Calculates the aggregation of ice by graupel
+*
+* @param [in] rho Density (kg/m^3)
+* @param [in] qr Rain specific mass (kg/kg)
+* @param [in] qg Graupel specific mass (kg/kg)
+* @param [in] qi Ice specific mass (kg/kg)
+* @param [in] sticking_eff Sticking efficiency (dimensionless)
+* @return The aggregation rate of ice by graupel (kg/kg/s)
+*/
 TARGET real_t ice_to_graupel(real_t rho, real_t qr, real_t qg, real_t qi,
                              real_t sticking_eff) {
 

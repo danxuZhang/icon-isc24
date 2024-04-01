@@ -1,0 +1,71 @@
+.TH "core/common/types.hpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/common/types.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <exception>\fP
+.br
+\fR#include <string>\fP
+.br
+\fR#include <vector>\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#\fBdefine\fP \fBTARGET\fP   \fBinline\fP"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "\fBusing\fP \fBreal_t\fP = \fBdouble\fP"
+.br
+.ti -1c
+.RI "template<\fBtypename\fP \fBT\fP > \fBusing\fP \fBarray_1d_t\fP = \fBstd::vector\fP<\fBT\fP, \fBallocator\fP<\fBT\fP>>"
+.br
+.ti -1c
+.RI "template<\fBtypename\fP \fBT\fP > \fBusing\fP \fBarray_2d_t\fP = \fBstd::vector\fP<\fBstd::vector\fP<\fBT\fP, \fBallocator\fP<\fBT\fP>>>"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class T > T \fBtype_converter\fP (char *str_ptr, char **end)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#\fBdefine\fP TARGET   \fBinline\fP"
+
+.PP
+Definition at line \fB48\fP of file \fBtypes\&.hpp\fP\&.
+.SH "Typedef Documentation"
+.PP 
+.SS "template<\fBtypename\fP \fBT\fP > \fBusing\fP \fBarray_1d_t\fP = \fBstd::vector\fP<\fBT\fP, \fBallocator\fP<\fBT\fP>>"
+
+.PP
+Definition at line \fB40\fP of file \fBtypes\&.hpp\fP\&.
+.SS "template<\fBtypename\fP \fBT\fP > \fBusing\fP \fBarray_2d_t\fP = \fBstd::vector\fP<\fBstd::vector\fP<\fBT\fP, \fBallocator\fP<\fBT\fP>>>"
+
+.PP
+Definition at line \fB43\fP of file \fBtypes\&.hpp\fP\&.
+.SS "\fBusing\fP \fBreal_t\fP = \fBdouble\fP"
+
+.PP
+Definition at line \fB24\fP of file \fBtypes\&.hpp\fP\&.
+.SH "Function Documentation"
+.PP 
+.SS "template<class T > T type_converter (char * str_ptr, char ** end)"
+
+.PP
+Definition at line \fB27\fP of file \fBtypes\&.hpp\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

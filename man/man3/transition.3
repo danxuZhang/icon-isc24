@@ -1,0 +1,1087 @@
+.TH "transition" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+transition
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBcloud_to_graupel\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqc\fP, \fBreal_t\fP \fBqg\fP)"
+.br
+.RI "Calculates the graupel riming rate from cloud water\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBcloud_to_rain\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBqc\fP, \fBreal_t\fP \fBqr\fP, \fBreal_t\fP \fBnc\fP)"
+.br
+.RI "Calculates the conversion rate from cloud water to rain water\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBcloud_to_snow\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBqc\fP, \fBreal_t\fP \fBqs\fP, \fBreal_t\fP \fBns\fP, \fBreal_t\fP \fBlambda\fP)"
+.br
+.RI "Calculates the riming snow rate from cloud water\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBcloud_x_ice\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBqc\fP, \fBreal_t\fP \fBqi\fP, \fBreal_t\fP \fBdt\fP)"
+.br
+.RI "Calculates the homogeneous freezing rate between cloud water and ice\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBgraupel_to_rain\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP p, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBdvsw0\fP, \fBreal_t\fP \fBqg\fP)"
+.br
+.RI "Melting of graupel to form rain\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBice_to_graupel\fP (\fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqr\fP, \fBreal_t\fP \fBqg\fP, \fBreal_t\fP \fBqi\fP, \fBreal_t\fP \fBsticking_eff\fP)"
+.br
+.RI "Calculates the aggregation of ice by graupel\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBice_to_snow\fP (\fBreal_t\fP \fBqi\fP, \fBreal_t\fP \fBns\fP, \fBreal_t\fP \fBlambda\fP, \fBreal_t\fP \fBsticking_eff\fP)"
+.br
+.RI "Conversion rate of ice to snow\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBrain_to_graupel\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqc\fP, \fBreal_t\fP \fBqr\fP, \fBreal_t\fP \fBqi\fP, \fBreal_t\fP \fBqs\fP, \fBreal_t\fP \fBmi\fP, \fBreal_t\fP \fBdvsw\fP, \fBreal_t\fP \fBdt\fP)"
+.br
+.RI "Freezing rain\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBrain_to_vapor\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqc\fP, \fBreal_t\fP \fBqr\fP, \fBreal_t\fP \fBdvsw\fP, \fBreal_t\fP \fBdt\fP)"
+.br
+.RI "Calculates the mass transfer from rain to water vapor (evaporation) "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBsnow_to_graupel\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqc\fP, \fBreal_t\fP \fBqs\fP)"
+.br
+.RI "Calculates the conversion rate from snow to graupel through riming\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBsnow_to_rain\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP p, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBdvsw0\fP, \fBreal_t\fP \fBqs\fP)"
+.br
+.RI "Melting of snow to form rain\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBvapor_x_graupel\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP p, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqg\fP, \fBreal_t\fP \fBdvsw\fP, \fBreal_t\fP \fBdvsi\fP, \fBreal_t\fP \fBdvsw0\fP, \fBreal_t\fP \fBdt\fP)"
+.br
+.RI "Calculates the graupel-vapor exchange rate\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBvapor_x_ice\fP (\fBreal_t\fP \fBqi\fP, \fBreal_t\fP \fBmi\fP, \fBreal_t\fP \fBeta\fP, \fBreal_t\fP \fBdvsi\fP, \fBreal_t\fP \fBdt\fP)"
+.br
+.RI "Calculates the rate of vapor deposition to ice\&. "
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBvapor_x_snow\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP p, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqs\fP, \fBreal_t\fP \fBns\fP, \fBreal_t\fP \fBlambda\fP, \fBreal_t\fP \fBeta\fP, \fBreal_t\fP \fBice_dep\fP, \fBreal_t\fP \fBdvsw\fP, \fBreal_t\fP \fBdvsi\fP, \fBreal_t\fP \fBdvsw0\fP, \fBreal_t\fP \fBdt\fP)"
+.br
+.RI "Calculates the rate of vapor deposition to snow\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa_rim\fP = 4\&.43"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb_rim\fP = 0\&.94878"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBqmin_ac\fP = 1\&.00e\-06"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtau_max\fP = 0\&.90e+00"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtau_min\fP = 1\&.00e\-30"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa_phi\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb_phi\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc_phi\fP = 5\&.00e\-05"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBac_kernel\fP = 5\&.25\fBe\fP+00"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBx3\fP = 2\&.00e+00"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBx2\fP = 2\&.60e\-10"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBx1\fP = 9\&.44\fBe\fP+09"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBecs\fP"
+.br
+.RI "Collection efficiency for snow collecting cloud water\&. "
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb_rim_\fP = \-(\fBgraupel_ct::v1s\fP + \fBstatic_cast\fP<\fBreal_t\fP>(3\&.0))"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc_rim\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc1_melt\fP = 12\&.31698"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc2_melt\fP = 7\&.39441\fBe\fP\-05"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa_melt\fP"
+.br
+.RI "melting prefactor "
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb_melt\fP"
+.br
+.RI "melting exponent "
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa_ct\fP = 1\&.72"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb_ct\fP = \fBstatic_cast\fP<\fBreal_t\fP>(7\&.0) / \fBstatic_cast\fP<\fBreal_t\fP>(8\&.0)"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc_agg_ct\fP = 2\&.46"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb_agg_ct\fP = 0\&.94878"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBqi0\fP = 0\&.0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc_iau\fP = 1\&.0E\-3"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc_agg\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb_agg\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtfrz_rain\fP = \fBthermodyn::tmelt\fP \- \fBstatic_cast\fP<\fBreal_t\fP>(2\&.0)"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa1\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb1\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc1\fP = 1\&.68"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc2\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc3\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc4\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa2\fP = 1\&.24\fBE\fP\-3"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb2\fP = \fBstatic_cast\fP<\fBreal_t\fP>(13\&.0) / \fBstatic_cast\fP<\fBreal_t\fP>(8\&.0)"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBqs_crit\fP = 1\&.\fBe\fP\-7"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb1_rv\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb2_rv\fP = 0\&.55555"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc1_rv\fP = 0\&.61"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc2_rv\fP = \-0\&.0163"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc3_rv\fP = 1\&.111\fBe\fP\-4"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa1_rv\fP = 1\&.536\fBe\fP\-3"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa2_rv\fP = 1\&.0E+0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa3_rv\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa_rim_ct\fP = 0\&.5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb_rim_ct\fP = \fBstatic_cast\fP<\fBreal_t\fP>(3\&.0) / \fBstatic_cast\fP<\fBreal_t\fP>(4\&.0)"
+.br
+.RI "Constants in riming formula\&. "
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc1_sr\fP = 79\&.6863"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc2_sr\fP = 0\&.612654\fBE\fP\-3"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa_sr\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb_sr\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa1_vg\fP = 0\&.398561"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa2_vg\fP = \-0\&.00152398"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa3\fP = 2554\&.99"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa4\fP = 2\&.6531\fBE\fP\-7"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa5\fP = 0\&.153907"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa6\fP = \-7\&.86703\fBe\fP\-07"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa7\fP = 0\&.0418521"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa8\fP = \-4\&.7524\fBE\fP\-8"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb_vg\fP = 0\&.6"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBami\fP = 130\&.0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb_exp\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBnu\fP = 1\&.75\fBe\fP\-5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa0_vs\fP = 1\&.0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBa2_vs\fP = \-(\fBgraupel_ct::v1s\fP + 1\&.0) / \fBstatic_cast\fP<\fBreal_t\fP>(2\&.0)"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBeps\fP = 1\&.\fBe\fP\-15"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBqs_lim\fP = 1\&.\fBe\fP\-7"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBcnx\fP = 4\&.0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBb_vs\fP = 0\&.8"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc1_vs\fP = 31282\&.3"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc2_vs\fP = 0\&.241897"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc3_vs\fP = 0\&.28003"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBc4_vs\fP = \-0\&.146293\fBE\fP\-6"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "\fBTARGET\fP \fBreal_t\fP transition::cloud_to_graupel (\fBreal_t\fP t, \fBreal_t\fP rho, \fBreal_t\fP qc, \fBreal_t\fP qg)"
+
+.PP
+Calculates the graupel riming rate from cloud water\&. This function calculates the rate at which cloud water is converted to graupel through the riming process\&. The riming rate is based on the temperature, ambient density, and the specific masses of cloud water and graupel\&. If the minimum of cloud water and graupel specific masses is below a threshold (\fBgraupel_ct::qmin\fP) or the temperature is below the homogeneous freezing threshold (\fBgraupel_ct::tfrz_hom\fP), the riming rate is set to zero\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP Temperature (K)\&. 
+.br
+\fIrho\fP Ambient density (kg/m^3)\&. 
+.br
+\fIqc\fP Cloud water specific mass (kg/kg)\&. 
+.br
+\fIqg\fP Graupel specific mass (kg/kg)\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The Graupel riming rate (kg/kg/s)\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB38\fP of file \fBcloud_to_graupel\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::cloud_to_rain (\fBreal_t\fP t, \fBreal_t\fP qc, \fBreal_t\fP qr, \fBreal_t\fP nc)"
+
+.PP
+Calculates the conversion rate from cloud water to rain water\&. This function calculates the conversion rate from cloud water to rain water using either the Kessler (1969) or Seifert and Beheng (2001) autoconversion rate\&.
+.PP
+Kessler (1969) autoconversion rate: scau = zccau * MAX( qc_ik - qc0, 0\&.0 ) scac = zcac * qc_ik * zeln7o8qrk
+.PP
+Seifert and Beheng (2001) autoconversion rate with constant cloud droplet number concentration qnc\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP Temperature (K)\&. 
+.br
+\fIqc\fP Cloud water specific mass (kg/kg)\&. 
+.br
+\fIqr\fP Rain water specific mass (kg/kg)\&. 
+.br
+\fInc\fP Cloud water number concentration (1/kg)\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The conversion rate from cloud water to rain water (kg/kg/s)\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB50\fP of file \fBcloud_to_rain\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::cloud_to_snow (\fBreal_t\fP t, \fBreal_t\fP qc, \fBreal_t\fP qs, \fBreal_t\fP ns, \fBreal_t\fP lambda)"
+
+.PP
+Calculates the riming snow rate from cloud water\&. This function calculates the rate at which cloud water is converted to snow through the riming process\&. The riming rate is based on the temperature, cloud water specific mass, snow specific mass, snow number concentration, and snow slope parameter (lambda)\&. If the minimum of cloud water and snow specific masses is below a threshold (\fBgraupel_ct::qmin\fP) or the temperature is below the homogeneous freezing threshold (\fBgraupel_ct::tfrz_hom\fP), the riming rate is set to zero\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP Temperature (K)\&. 
+.br
+\fIqc\fP Cloud water specific mass (kg/kg)\&. 
+.br
+\fIqs\fP Snow specific mass (kg/kg)\&. 
+.br
+\fIns\fP Snow number concentration (1/kg)\&. 
+.br
+\fIlambda\fP Snow slope parameter (1/m)\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The riming snow rate (kg/kg/s)\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB43\fP of file \fBcloud_to_snow\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::cloud_x_ice (\fBreal_t\fP t, \fBreal_t\fP qc, \fBreal_t\fP qi, \fBreal_t\fP dt)"
+
+.PP
+Calculates the homogeneous freezing rate between cloud water and ice\&. This function calculates the rate at which cloud water is converted to ice through the homogeneous freezing process, or the rate at which ice is converted back to cloud water through melting\&. The freezing/melting rate is based on the temperature, cloud water specific mass, ice specific mass, and the time step\&.
+.PP
+If the cloud water specific mass is above a threshold (\fBgraupel_ct::qmin\fP) and the temperature is below the homogeneous freezing threshold (\fBgraupel_ct::tfrz_hom\fP), the freezing rate is calculated as the cloud water specific mass divided by the time step\&.
+.PP
+If the ice specific mass is above a threshold (\fBgraupel_ct::qmin\fP) and the temperature is above the melting point (\fBthermodyn::tmelt\fP), the melting rate is calculated as the negative of the ice specific mass divided by the time step\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP Temperature (K)\&. 
+.br
+\fIqc\fP Cloud water specific mass (kg/kg)\&. 
+.br
+\fIqi\fP Ice specific mass (kg/kg)\&. 
+.br
+\fIdt\fP Time step (s)\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The homogeneous freezing rate (positive for freezing, negative for melting) (kg/kg/s)\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB42\fP of file \fBcloud_x_ice\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::graupel_to_rain (\fBreal_t\fP t, \fBreal_t\fP p, \fBreal_t\fP rho, \fBreal_t\fP dvsw0, \fBreal_t\fP qg)"
+
+.PP
+Melting of graupel to form rain\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP Ambient temperature (K) 
+.br
+\fIp\fP Ambient pressure (Pa) 
+.br
+\fIrho\fP Ambient density (kg/m^3) 
+.br
+\fIdvsw0\fP qv-qsat_water(T0) (kg/kg) 
+.br
+\fIqg\fP graupel specific mass (kg/kg) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The melting rate of graupel to form rain, change in the mass of graupel per unit mass of the mixture per unit time\&. (kg/kg/s) 
+.RE
+.PP
+
+.PP
+Definition at line \fB37\fP of file \fBgraupel_to_rain\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::ice_to_graupel (\fBreal_t\fP rho, \fBreal_t\fP qr, \fBreal_t\fP qg, \fBreal_t\fP qi, \fBreal_t\fP sticking_eff)"
+
+.PP
+Calculates the aggregation of ice by graupel\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrho\fP Density (kg/m^3) 
+.br
+\fIqr\fP Rain specific mass (kg/kg) 
+.br
+\fIqg\fP Graupel specific mass (kg/kg) 
+.br
+\fIqi\fP Ice specific mass (kg/kg) 
+.br
+\fIsticking_eff\fP Sticking efficiency (dimensionless) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The aggregation rate of ice by graupel (kg/kg/s) 
+.RE
+.PP
+
+.PP
+Definition at line \fB35\fP of file \fBice_to_graupel\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::ice_to_snow (\fBreal_t\fP qi, \fBreal_t\fP ns, \fBreal_t\fP lambda, \fBreal_t\fP sticking_eff)"
+
+.PP
+Conversion rate of ice to snow\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIqi\fP Ice specific mass 
+.br
+\fIns\fP Snow number 
+.br
+\fIlambda\fP Snow intercept parameter, lambda 
+.br
+\fIsticking_eff\fP Ice sticking effiency 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+conversion rate of ice to snow 
+.RE
+.PP
+
+.PP
+Definition at line \fB37\fP of file \fBice_to_snow\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::rain_to_graupel (\fBreal_t\fP t, \fBreal_t\fP rho, \fBreal_t\fP qc, \fBreal_t\fP qr, \fBreal_t\fP qi, \fBreal_t\fP qs, \fBreal_t\fP mi, \fBreal_t\fP dvsw, \fBreal_t\fP dt)"
+
+.PP
+Freezing rain\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP Temperature 
+.br
+\fIrho\fP Ambient density 
+.br
+\fIqr\fP Specific humidity of rain 
+.br
+\fIqc\fP Cloud liquid specific mass 
+.br
+\fIqi\fP Cloud ice specific mass 
+.br
+\fIqs\fP Snow specific mass 
+.br
+\fImi\fP Ice crystal mass 
+.br
+\fIdvsw\fP qv-qsat_water(T) 
+.br
+\fIdt\fP Time step 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+convertion rate from graupel to rain 
+.RE
+.PP
+
+.PP
+Definition at line \fB52\fP of file \fBrain_to_graupel\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::rain_to_vapor (\fBreal_t\fP t, \fBreal_t\fP rho, \fBreal_t\fP qc, \fBreal_t\fP qr, \fBreal_t\fP dvsw, \fBreal_t\fP dt)"
+
+.PP
+Calculates the mass transfer from rain to water vapor (evaporation) 
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP Temperature (K) 
+.br
+\fIrho\fP Ambient density (kg/m^3) 
+.br
+\fIqc\fP Specific humidity of cloud (kg/kg) 
+.br
+\fIqr\fP Specific humidity of rain (kg/kg) 
+.br
+\fIdvsw\fP qv - qsat_water(T) (kg/kg) 
+.br
+\fIdt\fP Time step (s) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The mass transfer rate from rain to water vapor (kg/kg/s) 
+.RE
+.PP
+
+.PP
+Definition at line \fB42\fP of file \fBrain_to_vapor\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::snow_to_graupel (\fBreal_t\fP t, \fBreal_t\fP rho, \fBreal_t\fP qc, \fBreal_t\fP qs)"
+
+.PP
+Calculates the conversion rate from snow to graupel through riming\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP Ambient temperature (K) 
+.br
+\fIrho\fP Ambient density (kg/m^3) 
+.br
+\fIqc\fP Cloud specific mass (kg/kg) 
+.br
+\fIqs\fP Snow specific mass (kg/kg) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The conversion rate from snow to graupel (kg/kg/s) 
+.RE
+.PP
+
+.PP
+Definition at line \fB32\fP of file \fBsnow_to_graupel\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::snow_to_rain (\fBreal_t\fP t, \fBreal_t\fP p, \fBreal_t\fP rho, \fBreal_t\fP dvsw0, \fBreal_t\fP qs)"
+
+.PP
+Melting of snow to form rain\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP Temperature 
+.br
+\fIp\fP Ambient pressure 
+.br
+\fIrho\fP Ambient density 
+.br
+\fIdvsw0\fP qv-qsat_water(T0) 
+.br
+\fIqs\fP Snow specific mass 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+conversion rate from snow to rain 
+.RE
+.PP
+
+.PP
+Definition at line \fB37\fP of file \fBsnow_to_rain\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::vapor_x_graupel (\fBreal_t\fP t, \fBreal_t\fP p, \fBreal_t\fP rho, \fBreal_t\fP qg, \fBreal_t\fP dvsw, \fBreal_t\fP dvsi, \fBreal_t\fP dvsw0, \fBreal_t\fP dt)"
+
+.PP
+Calculates the graupel-vapor exchange rate\&. This function calculates the exchange rate between graupel and water vapor, which can be positive (deposition) or negative (sublimation), depending on the ambient conditions and the state of the graupel\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP Temperature (K) 
+.br
+\fIp\fP Ambient pressure (Pa) 
+.br
+\fIrho\fP Ambient density (kg/m^3) 
+.br
+\fIqg\fP Graupel specific mass (kg/kg) 
+.br
+\fIdvsw\fP qv - qsat_water(T) (kg/kg) 
+.br
+\fIdvsi\fP qv - qsat_ice(T) (kg/kg) 
+.br
+\fIdvsw0\fP qv - qsat_water(T0) (kg/kg) 
+.br
+\fIdt\fP Time step (s) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The graupel-vapor exchange rate (kg/kg/s) 
+.RE
+.PP
+
+.PP
+Definition at line \fB49\fP of file \fBvapor_x_graupel\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::vapor_x_ice (\fBreal_t\fP qi, \fBreal_t\fP mi, \fBreal_t\fP eta, \fBreal_t\fP dvsi, \fBreal_t\fP dt)"
+
+.PP
+Calculates the rate of vapor deposition to ice\&. This function calculates the rate at which water vapor is deposited onto ice crystals, or the rate at which ice crystals sublimate, depending on the ambient conditions and the state of the ice\&. The deposition/sublimation rate is based on the specific humidity of ice, ice crystal mass, deposition factor, vapor excess with respect to ice saturation, and the time step\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIqi\fP Specific humidity of ice (kg/kg) 
+.br
+\fImi\fP Ice crystal mass (kg) 
+.br
+\fIeta\fP Deposition factor (dimensionless) 
+.br
+\fIdvsi\fP Vapor excess with respect to ice saturation (kg/kg) 
+.br
+\fIdt\fP Time step (s) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The rate of vapor deposition to ice (kg/kg/s) 
+.RE
+.PP
+
+.PP
+Definition at line \fB41\fP of file \fBvapor_x_ice\&.hpp\fP\&.
+.SS "\fBTARGET\fP \fBreal_t\fP transition::vapor_x_snow (\fBreal_t\fP t, \fBreal_t\fP p, \fBreal_t\fP rho, \fBreal_t\fP qs, \fBreal_t\fP ns, \fBreal_t\fP lambda, \fBreal_t\fP eta, \fBreal_t\fP ice_dep, \fBreal_t\fP dvsw, \fBreal_t\fP dvsi, \fBreal_t\fP dvsw0, \fBreal_t\fP dt)"
+
+.PP
+Calculates the rate of vapor deposition to snow\&. This function calculates the rate at which water vapor is deposited onto snow particles, or the rate at which snow particles sublimate, depending on the ambient conditions and the state of the snow\&. The deposition/sublimation rate is based on temperature, pressure, density, snow specific mass, snow number concentration, slope parameter (lambda), deposition factor, and various other parameters\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP Temperature (K) 
+.br
+\fIp\fP Ambient pressure (Pa) 
+.br
+\fIrho\fP Ambient density (kg/m^3) 
+.br
+\fIqs\fP Snow specific mass (kg/kg) 
+.br
+\fIns\fP Snow number concentration (1/kg) 
+.br
+\fIlambda\fP Slope parameter (lambda) for snow size distribution (1/m) 
+.br
+\fIeta\fP Deposition factor (dimensionless) 
+.br
+\fIice_dep\fP Limiter for vapor deposition on snow (kg/kg/s) 
+.br
+\fIdvsw\fP qv - qsat_water(T) (kg/kg) 
+.br
+\fIdvsi\fP qv - qsat_ice(T) (kg/kg) 
+.br
+\fIdvsw0\fP qv - qsat_water(T0) (kg/kg) 
+.br
+\fIdt\fP Time step (s) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The rate of vapor deposition to snow (kg/kg/s) 
+.RE
+.PP
+
+.PP
+Definition at line \fB59\fP of file \fBvapor_x_snow\&.hpp\fP\&.
+.SH "Variable Documentation"
+.PP 
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a0_vs = 1\&.0\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB21\fP of file \fBvapor_x_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a1\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    9\&.95e\-5
+.fi
+
+.PP
+Definition at line \fB21\fP of file \fBrain_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a1_rv = 1\&.536\fBe\fP\-3\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB26\fP of file \fBrain_to_vapor\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a1_vg = 0\&.398561\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB20\fP of file \fBvapor_x_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a2 = 1\&.24\fBE\fP\-3\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB34\fP of file \fBrain_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a2_rv = 1\&.0E+0\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB27\fP of file \fBrain_to_vapor\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a2_vg = \-0\&.00152398\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB21\fP of file \fBvapor_x_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a2_vs = \-(\fBgraupel_ct::v1s\fP + 1\&.0) / \fBstatic_cast\fP<\fBreal_t\fP>(2\&.0)\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB22\fP of file \fBvapor_x_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a3 = 2554\&.99\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB22\fP of file \fBvapor_x_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a3_rv\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    19\&.0621E+0
+.fi
+
+.PP
+Definition at line \fB28\fP of file \fBrain_to_vapor\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a4 = 2\&.6531\fBE\fP\-7\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB23\fP of file \fBvapor_x_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a5 = 0\&.153907\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB24\fP of file \fBvapor_x_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a6 = \-7\&.86703\fBe\fP\-07\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB25\fP of file \fBvapor_x_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a7 = 0\&.0418521\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB26\fP of file \fBvapor_x_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a8 = \-4\&.7524\fBE\fP\-8\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB27\fP of file \fBvapor_x_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a_ct = 1\&.72\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB20\fP of file \fBice_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a_melt\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    graupel_ct::tx \- static_cast<real_t>(389\&.5)
+.fi
+
+.PP
+melting prefactor 
+.PP
+Definition at line \fB22\fP of file \fBgraupel_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a_phi\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    6\&.00e+02
+.fi
+
+.PP
+Definition at line \fB23\fP of file \fBcloud_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a_rim = 4\&.43\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB20\fP of file \fBcloud_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a_rim_ct = 0\&.5\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB20\fP of file \fBsnow_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::a_sr\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    graupel_ct::tx \- static_cast<real_t>(389\&.5)
+.fi
+
+.PP
+Definition at line \fB22\fP of file \fBsnow_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::ac_kernel = 5\&.25\fBe\fP+00\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB28\fP of file \fBcloud_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::ami = 130\&.0\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB20\fP of file \fBvapor_x_ice\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b1\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    static_cast<real_t>(7\&.0) /
+    static_cast<real_t>(
+        4\&.0)
+.fi
+
+.PP
+Definition at line \fB23\fP of file \fBrain_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b1_rv\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    0\&.16667
+.fi
+
+.PP
+Definition at line \fB20\fP of file \fBrain_to_vapor\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b2 = \fBstatic_cast\fP<\fBreal_t\fP>(13\&.0) / \fBstatic_cast\fP<\fBreal_t\fP>(8\&.0)\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB35\fP of file \fBrain_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b2_rv = 0\&.55555\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB22\fP of file \fBrain_to_vapor\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b_agg\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    \-(graupel_ct::v1s + static_cast<real_t>(3\&.0))
+.fi
+
+.PP
+Definition at line \fB25\fP of file \fBice_to_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b_agg_ct = 0\&.94878\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB23\fP of file \fBice_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b_ct = \fBstatic_cast\fP<\fBreal_t\fP>(7\&.0) / \fBstatic_cast\fP<\fBreal_t\fP>(8\&.0)\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB21\fP of file \fBice_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b_exp\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    \-0\&.67
+.fi
+
+.PP
+Definition at line \fB21\fP of file \fBvapor_x_ice\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b_melt\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    static_cast<real_t>(3\&.0) / static_cast<real_t>(5\&.0)
+.fi
+
+.PP
+melting exponent 
+.PP
+Definition at line \fB24\fP of file \fBgraupel_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b_phi\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    0\&.68e+00
+.fi
+
+.PP
+Definition at line \fB25\fP of file \fBcloud_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b_rim = 0\&.94878\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB21\fP of file \fBcloud_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b_rim_ = \-(\fBgraupel_ct::v1s\fP + \fBstatic_cast\fP<\fBreal_t\fP>(3\&.0))\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB22\fP of file \fBcloud_to_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b_rim_ct = \fBstatic_cast\fP<\fBreal_t\fP>(3\&.0) / \fBstatic_cast\fP<\fBreal_t\fP>(4\&.0)\fR [constexpr]\fP"
+
+.PP
+Constants in riming formula\&. 
+.PP
+Definition at line \fB21\fP of file \fBsnow_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b_sr\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    static_cast<real_t>(4\&.0) / static_cast<real_t>(5\&.0)
+.fi
+
+.PP
+Definition at line \fB24\fP of file \fBsnow_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b_vg = 0\&.6\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB28\fP of file \fBvapor_x_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::b_vs = 0\&.8\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB26\fP of file \fBvapor_x_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c1 = 1\&.68\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB27\fP of file \fBrain_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c1_melt = 12\&.31698\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB20\fP of file \fBgraupel_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c1_rv = 0\&.61\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB23\fP of file \fBrain_to_vapor\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c1_sr = 79\&.6863\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB20\fP of file \fBsnow_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c1_vs = 31282\&.3\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB27\fP of file \fBvapor_x_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c2\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    0\&.66
+.fi
+
+.PP
+Definition at line \fB28\fP of file \fBrain_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c2_melt = 7\&.39441\fBe\fP\-05\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB21\fP of file \fBgraupel_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c2_rv = \-0\&.0163\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB24\fP of file \fBrain_to_vapor\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c2_sr = 0\&.612654\fBE\fP\-3\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB21\fP of file \fBsnow_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c2_vs = 0\&.241897\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB28\fP of file \fBvapor_x_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c3\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    1\&.0
+.fi
+
+.PP
+Definition at line \fB30\fP of file \fBrain_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c3_rv = 1\&.111\fBe\fP\-4\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB25\fP of file \fBrain_to_vapor\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c3_vs = 0\&.28003\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB29\fP of file \fBvapor_x_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c4\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    0\&.1
+.fi
+
+.PP
+Definition at line \fB32\fP of file \fBrain_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c4_vs = \-0\&.146293\fBE\fP\-6\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB30\fP of file \fBvapor_x_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c_agg\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    static_cast<real_t>(2\&.61) *
+    graupel_ct::v0s
+.fi
+
+.PP
+Definition at line \fB22\fP of file \fBice_to_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c_agg_ct = 2\&.46\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB22\fP of file \fBice_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c_iau = 1\&.0E\-3\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB21\fP of file \fBice_to_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c_phi = 5\&.00e\-05\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB27\fP of file \fBcloud_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::c_rim\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+= static_cast<real_t>(2\&.61) * ecs *
+                         graupel_ct::v0s
+.fi
+
+.PP
+Definition at line \fB23\fP of file \fBcloud_to_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::cnx = 4\&.0\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB25\fP of file \fBvapor_x_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::ecs\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+=
+    0\&.9
+.fi
+
+.PP
+Collection efficiency for snow collecting cloud water\&. 
+.PP
+Definition at line \fB20\fP of file \fBcloud_to_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::eps = 1\&.\fBe\fP\-15\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB23\fP of file \fBvapor_x_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::nu = 1\&.75\fBe\fP\-5\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB20\fP of file \fBvapor_x_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::qi0 = 0\&.0\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB20\fP of file \fBice_to_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::qmin_ac = 1\&.00e\-06\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB20\fP of file \fBcloud_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::qs_crit = 1\&.\fBe\fP\-7\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB36\fP of file \fBrain_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::qs_lim = 1\&.\fBe\fP\-7\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB24\fP of file \fBvapor_x_snow\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::tau_max = 0\&.90e+00\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB21\fP of file \fBcloud_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::tau_min = 1\&.00e\-30\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB22\fP of file \fBcloud_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::tfrz_rain = \fBthermodyn::tmelt\fP \- \fBstatic_cast\fP<\fBreal_t\fP>(2\&.0)\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB20\fP of file \fBrain_to_graupel\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::x1 = 9\&.44\fBe\fP+09\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB31\fP of file \fBcloud_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::x2 = 2\&.60e\-10\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB30\fP of file \fBcloud_to_rain\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP transition::x3 = 2\&.00e+00\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB29\fP of file \fBcloud_to_rain\&.hpp\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

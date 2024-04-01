@@ -1,0 +1,70 @@
+.TH "core/transitions/vapor_x_snow.hpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/transitions/vapor_x_snow.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include '\&.\&./common/constants\&.hpp'\fP
+.br
+\fR#include '\&.\&./common/types\&.hpp'\fP
+.br
+\fR#include <cmath>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBtransition\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBtransition::vapor_x_snow\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP p, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqs\fP, \fBreal_t\fP \fBns\fP, \fBreal_t\fP \fBlambda\fP, \fBreal_t\fP \fBeta\fP, \fBreal_t\fP \fBice_dep\fP, \fBreal_t\fP \fBdvsw\fP, \fBreal_t\fP \fBdvsi\fP, \fBreal_t\fP \fBdvsw0\fP, \fBreal_t\fP \fBdt\fP)"
+.br
+.RI "Calculates the rate of vapor deposition to snow\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::nu\fP = 1\&.75\fBe\fP\-5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::a0_vs\fP = 1\&.0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::a2_vs\fP = \-(\fBgraupel_ct::v1s\fP + 1\&.0) / \fBstatic_cast\fP<\fBreal_t\fP>(2\&.0)"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::eps\fP = 1\&.\fBe\fP\-15"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::qs_lim\fP = 1\&.\fBe\fP\-7"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::cnx\fP = 4\&.0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::b_vs\fP = 0\&.8"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::c1_vs\fP = 31282\&.3"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::c2_vs\fP = 0\&.241897"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::c3_vs\fP = 0\&.28003"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBtransition::c4_vs\fP = \-0\&.146293\fBE\fP\-6"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

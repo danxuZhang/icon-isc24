@@ -30,15 +30,21 @@ constexpr real_t c5les = c3les * (thermodyn::tmelt - c4les);
 constexpr real_t c5ies = c3ies * (thermodyn::tmelt - c4ies);
 
 /**
- * @brief TODO
- *
- * @param [in] t Temperature (kelvin)
- * @param [in] qliq Specific mass of liquid phases
- * @param [in] qice Specific mass of solid phases
- * @param [in] rho Density
- * @param [in] dz Density
- * @return Internal energy
- */
+* @brief Calculates the internal energy of a system.
+*
+* This function calculates the internal energy of a system based on the temperature,
+* specific mass of water vapor, liquid phases, solid phases, density, and layer thickness.
+* The internal energy is computed using the moist isometric specific heat and latent heats
+* of vaporization and sublimation.
+*
+* @param [in] t Temperature (K).
+* @param [in] qv Specific mass of water vapor (kg/kg).
+* @param [in] qliq Specific mass of liquid phases (kg/kg).
+* @param [in] qice Specific mass of solid phases (kg/kg).
+* @param [in] rho Density (kg/m^3).
+* @param [in] dz Layer thickness (m).
+* @return The internal energy of the system (J/m^2).
+*/
 TARGET real_t internal_energy(real_t t, real_t qv, real_t qliq, real_t qice,
                               real_t rho, real_t dz) {
 
@@ -53,16 +59,21 @@ TARGET real_t internal_energy(real_t t, real_t qv, real_t qliq, real_t qice,
 }
 
 /**
- * @brief Calculates temperature from internal energy
- *
- * @param [in] U  Internal energy (extensive)
- * @param [in] qv Water vapor specific humidity
- * @param [in] qliq Specific mass of liquid phases
- * @param [in] qice Specific mass of solid phases
- * @param [in] rho Density
- * @param [in] dz Density
- * @return Temperature
- */
+* @brief Calculates the temperature from the internal energy of a system.
+*
+* This function calculates the temperature of a system based on the internal energy,
+* specific mass of water vapor, liquid phases, solid phases, density, and layer thickness.
+* The temperature is computed by solving the internal energy equation for temperature,
+* considering the moist isometric specific heat and latent heats of vaporization and sublimation.
+*
+* @param [in] U Internal energy of the system (J/m^2).
+* @param [in] qv Specific mass of water vapor (kg/kg).
+* @param [in] qliq Specific mass of liquid phases (kg/kg).
+* @param [in] qice Specific mass of solid phases (kg/kg).
+* @param [in] rho Density (kg/m^3).
+* @param [in] dz Layer thickness (m).
+* @return The temperature of the system (K).
+*/
 TARGET real_t T_from_internal_energy(real_t U, real_t qv, real_t qliq,
                                      real_t qice, real_t rho, real_t dz) {
 
@@ -79,12 +90,15 @@ TARGET real_t T_from_internal_energy(real_t U, real_t qv, real_t qliq,
 }
 
 /**
- * @brief Calculates specific humidity from vapor and total pressure
- *
- * @param [in] pvapor Vapor pressure
- * @param [in] ptotal Total pressure
- * @return Humidity
- */
+* @brief Calculates the specific humidity from vapor pressure and total pressure.
+*
+* This function calculates the specific humidity based on the vapor pressure and total pressure,
+* using the gas constants for dry air and water vapor.
+*
+* @param [in] pvapor Vapor pressure (Pa).
+* @param [in] ptotal Total pressure (Pa).
+* @return The specific humidity (kg/kg).
+*/
 [[maybe_unused]] TARGET real_t specific_humidity(real_t pvapor, real_t ptotal) {
 
   real_t rdv = rd / rv;
@@ -94,11 +108,14 @@ TARGET real_t T_from_internal_energy(real_t U, real_t qv, real_t qliq,
 }
 
 /**
- * @brief Calculates saturation pressure over water
- *
- * @param [in] t Temperature (kelvin)
- * @return Saturation pressure
- */
+* @brief Calculates the saturation pressure over water.
+*
+* This function calculates the saturation pressure over water based on the temperature,
+* using an empirical formula.
+*
+* @param [in] t Temperature (K).
+* @return The saturation pressure over water (Pa).
+*/
 TARGET real_t sat_pres_water(real_t t) {
   return c1es * exp(c3les * (t - thermodyn::tmelt) / (t - c4les));
 }
@@ -148,22 +165,30 @@ TARGET real_t qsat_ice_rho(real_t t, real_t rho) {
 }
 
 /**
- * @brief:  TODO
- * @param [in] qs Saturation vapor pressure
- * @param [in] t Temperature (kelvin)
- * @return TODO
- */
+* @brief Computes the derivative of saturation vapor pressure (over liquid) with respect to temperature.
+*
+* This function computes the derivative of saturation vapor pressure over liquid water with respect to temperature,
+* based on the saturation vapor pressure and temperature.
+*
+* @param [in] qs Saturation vapor pressure over liquid water (Pa).
+* @param [in] t Temperature (K).
+* @return The derivative of saturation vapor pressure with respect to temperature (Pa/K).
+*/
 [[maybe_unused]] TARGET real_t dqsatdT(real_t qs, real_t t) {
   return c5les * (static_cast<real_t>(1.0) + vtmpc1 * qs) * qs /
          pow((t - c4les), static_cast<real_t>(2));
 }
 
 /**
- * @brief : TODO
- * @param [in] qs Saturation vapor pressure
- * @param [in] t Temperature (kelvin)
- * @return derivative
- */
+* @brief Computes the derivative of saturation vapor pressure (over ice) with respect to temperature.
+*
+* This function computes the derivative of saturation vapor pressure over ice with respect to temperature,
+* based on the saturation vapor pressure and temperature.
+*
+* @param [in] qs Saturation vapor pressure over ice (Pa).
+* @param [in] t Temperature (K).
+* @return The derivative of saturation vapor pressure over ice with respect to temperature (Pa/K).
+*/
 [[maybe_unused]] TARGET real_t dqsatdT_ice(real_t qs, real_t t) {
   return c5ies * (static_cast<real_t>(1.0) + vtmpc1 * qs) * qs /
          pow((t - c4ies), static_cast<real_t>(2));

@@ -1,0 +1,91 @@
+.TH "core/properties/snow_number.hpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/properties/snow_number.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include '\&.\&./common/constants\&.hpp'\fP
+.br
+\fR#include '\&.\&./common/types\&.hpp'\fP
+.br
+\fR#include <cmath>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBproperty\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTARGET\fP \fBreal_t\fP \fBproperty::snow_number\fP (\fBreal_t\fP \fBt\fP, \fBreal_t\fP \fBrho\fP, \fBreal_t\fP \fBqs\fP)"
+.br
+.RI "Calculates the snow number concentration\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::tmin\fP = \fBthermodyn::tmelt\fP \- \fBstatic_cast\fP<\fBreal_t\fP>(40\&.)"
+.br
+.RI "Minimum temperature\&. "
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::tmax\fP = \fBthermodyn::tmelt\fP"
+.br
+.RI "Maximum temperature\&. "
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::qsmin\fP = 2\&.0e\-6"
+.br
+.RI "Minimum value of snow specific mass\&. "
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::xa1\fP = \-1\&.65\fBe\fP+0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::xa2\fP = 5\&.45\fBe\fP\-2"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::xa3\fP = 3\&.27\fBe\fP\-4"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::xb1\fP = 1\&.42\fBe\fP+0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::xb2\fP = 1\&.19\fBe\fP\-2"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::xb3\fP = 9\&.60e\-5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::n0s0\fP = 8\&.00e+5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::n0s1\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::n0s2\fP = \-0\&.107"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::n0s3\fP = 13\&.5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::n0s4\fP = \fBstatic_cast\fP<\fBreal_t\fP>(0\&.5) * \fBn0s1\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::n0s5\fP = 1\&.\fBe6\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::n0s6\fP = \fBstatic_cast\fP<\fBreal_t\fP>(1\&.\fBe2\fP) * \fBn0s1\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBproperty::n0s7\fP = 1\&.\fBe9\fP"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.

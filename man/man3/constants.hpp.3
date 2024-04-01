@@ -1,0 +1,229 @@
+.TH "core/common/constants.hpp" 3 "Version NTU_v1.0" "ICON - Graupel" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/common/constants.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'types\&.hpp'\fP
+.br
+\fR#include <cmath>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBthermodyn\fP"
+.br
+.ti -1c
+.RI "namespace \fBgraupel_ct\fP"
+.br
+.ti -1c
+.RI "namespace \fBidx\fP"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::rd\fP = 287\&.04"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::cpd\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::cvd\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::con_m\fP = 1\&.50E\-5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::con_h\fP = 2\&.20E\-5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::con0_h\fP = 2\&.40e\-2"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::eta0d\fP = 1\&.717\fBe\fP\-5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::rv\fP = 461\&.51"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::cpv\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::cvv\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::dv0\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::rhoh2o\fP = 1000\&."
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::rhoice\fP = 916\&.7"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::cv_i\fP = 2000\&.0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::alv\fP = 2\&.5008\fBe6\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::als\fP = 2\&.8345\fBe6\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::alf\fP = \fBals\fP \- \fBalv\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::tmelt\fP = 273\&.15"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::t3\fP = 273\&.16"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::rdv\fP = \fBrd\fP / \fBrv\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::vtmpc1\fP = \fBrv\fP / \fBrd\fP \- \fBstatic_cast\fP<\fBreal_t\fP>(1\&.)"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::vtmpc2\fP = \fBcpv\fP / \fBcpd\fP \- \fBstatic_cast\fP<\fBreal_t\fP>(1\&.)"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::rcpv\fP = \fBcpd\fP / \fBcpv\fP \- \fBstatic_cast\fP<\fBreal_t\fP>(1\&.)"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::alvdcp\fP = \fBalv\fP / \fBcpd\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::alsdcp\fP = \fBals\fP / \fBcpd\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::rcpd\fP = \fBstatic_cast\fP<\fBreal_t\fP>(1\&.) / \fBcpd\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::rcvd\fP = \fBstatic_cast\fP<\fBreal_t\fP>(1\&.) / \fBcvd\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::rcpl\fP = 3\&.1733"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::clw\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBthermodyn::cv_v\fP = (\fBrcpv\fP + \fBstatic_cast\fP<\fBreal_t\fP>(1\&.0)) * \fBcpd\fP \- \fBrv\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::rho_00\fP = 1\&.225"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::q1\fP = 8\&.\fBe\fP\-6"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::qmin\fP = 1\&.0e\-15"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::ams\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::bms\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::v0s\fP = 25\&.0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::v1s\fP = 0\&.5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::m0_ice\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::ci\fP = 2108\&."
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::tx\fP = 3339\&.5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::tfrz_het1\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::tfrz_het2\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::tfrz_hom\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::lvc\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBgraupel_ct::lsc\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBsize_t\fP \fBidx::nx\fP = 6"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBsize_t\fP \fBidx::np\fP = 4"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBsize_t\fP \fBidx::lqr\fP = 0"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBsize_t\fP \fBidx::lqi\fP = 1"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBsize_t\fP \fBidx::lqs\fP = 2"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBsize_t\fP \fBidx::lqg\fP = 3"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBsize_t\fP \fBidx::lqc\fP = 4"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBsize_t\fP \fBidx::lqv\fP = 5"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBsize_t\fP \fBidx::qx_ind\fP [] = {\fBlqv\fP, \fBlqc\fP, \fBlqr\fP, \fBlqs\fP, \fBlqi\fP, \fBlqg\fP}"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBsize_t\fP \fBidx::qp_ind\fP [] = {\fBlqr\fP, \fBlqi\fP, \fBlqs\fP, \fBlqg\fP}"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBbool\fP \fBlrain\fP = \fBtrue\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBbool\fP \fBlcold\fP = \fBtrue\fP"
+.br
+.ti -1c
+.RI "\fBconstexpr\fP \fBreal_t\fP \fBparams\fP [4][3]"
+.br
+.in -1c
+.SH "Variable Documentation"
+.PP 
+.SS "\fBconstexpr\fP \fBbool\fP lcold = \fBtrue\fP\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB121\fP of file \fBconstants\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBbool\fP lrain = \fBtrue\fP\fR [constexpr]\fP"
+
+.PP
+Definition at line \fB120\fP of file \fBconstants\&.hpp\fP\&.
+.SS "\fBconstexpr\fP \fBreal_t\fP params[4][3]\fR [constexpr]\fP"
+\fBInitial value:\fP.PP
+.nf
+= {
+    {14\&.58, 0\&.111, 1\&.0e\-12},
+    {1\&.25, 0\&.160, 1\&.0e\-12},
+    {57\&.80, static_cast<real_t>(0\&.5) / static_cast<real_t>(3\&.0), 1\&.0e\-12},
+    {12\&.24, 0\&.217, 1\&.0e\-08}}
+.fi
+
+.PP
+Definition at line \fB123\fP of file \fBconstants\&.hpp\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ICON - Graupel from the source code\&.
