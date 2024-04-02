@@ -8,14 +8,6 @@
 // See LICENSES/ for license information
 // SPDX-License-Identifier: BSD-3-Clause
 // ---------------------------------------------------------------
-//
-// In numerical weather prediction (NWP) models like the one you're asking about, 
-// the atmosphere is divided into a three-dimensional grid. Each grid point or "cell" 
-// represents a discrete volume of air with its own set of atmospheric properties 
-// (such as temperature, pressure, humidity) and, in this context, hydrometeor content. 
-// Calculations are performed for each cell, considering interactions with neighboring cells, 
-// to simulate the dynamics of the atmosphere over time. The term "cell" is commonly used 
-// to denote these discrete elements of the computational grid.
 
 
 #include "core/common/graupel.hpp"
