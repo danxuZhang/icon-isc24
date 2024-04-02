@@ -1,5 +1,0 @@
-var searchData=
-[
-  ['with_20default_20flags_20and_20seq_20frontend_0',['Compile the project (with default flags and Seq frontend)',['../md__r_e_a_d_m_e.html#autotoc_md7',1,'']]],
-  ['write_5ffields_1',['write_fields',['../namespaceio__muphys.html#a28deb2e7f04d87b1201297b7846dee33',1,'io_muphys::write_fields(const string output_file, size_t &amp;ncells, size_t &amp;nlev, array_1d_t&lt; real_t &gt; &amp;t, array_1d_t&lt; real_t &gt; &amp;qv, array_1d_t&lt; real_t &gt; &amp;qc, array_1d_t&lt; real_t &gt; &amp;qi, array_1d_t&lt; real_t &gt; &amp;qr, array_1d_t&lt; real_t &gt; &amp;qs, array_1d_t&lt; real_t &gt; &amp;qg)'],['../namespaceio__muphys.html#afbcec0e3e5b5a420e9dc1a90b4fa0042',1,'io_muphys::write_fields(const string output_file, const string input_file, size_t &amp;ncells, size_t &amp;nlev, array_1d_t&lt; real_t &gt; &amp;t, array_1d_t&lt; real_t &gt; &amp;qv, array_1d_t&lt; real_t &gt; &amp;qc, array_1d_t&lt; real_t &gt; &amp;qi, array_1d_t&lt; real_t &gt; &amp;qr, array_1d_t&lt; real_t &gt; &amp;qs, array_1d_t&lt; real_t &gt; &amp;qg)']]]
-];
