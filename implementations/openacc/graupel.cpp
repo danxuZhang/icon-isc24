@@ -45,6 +45,19 @@ inline auto get_min_element(T* arr, size_t sz) -> T{
   return min_ele;
 }
 
+template<typename T>
+inline auto get_max_5(T a, T b, T c, T d, T e) -> T {
+  T max1 = std::max(a, b);
+  T max2 = std::max(max1, c);
+  T max3 = std::max(max2, d);
+  return std::max(max3, e);
+}
+
+template<typename T>
+inline auto get_max_3(T a, T b, T c) -> T {
+  T max1 = std::max(a, b);
+  return std::max(max1, c);
+}
 
 /**
  * @brief TODO
@@ -130,9 +143,9 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
     #pragma acc loop
     for (size_t j = ivstart; j < ivend; j++) {
       size_t oned_vec_index = i * ivend + j;
-      if ((std::max({q[lqc].x[oned_vec_index], q[lqr].x[oned_vec_index],
+      if ((get_max_5(q[lqc].x[oned_vec_index], q[lqr].x[oned_vec_index],
                      q[lqs].x[oned_vec_index], q[lqi].x[oned_vec_index],
-                     q[lqg].x[oned_vec_index]}) > qmin) or
+                     q[lqg].x[oned_vec_index]) > qmin) or
           ((t[oned_vec_index] < tfrz_het2) and
            (q[lqv].x[oned_vec_index] >
             qsat_ice_rho(t[oned_vec_index], rho[oned_vec_index])))) {
@@ -144,8 +157,8 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
         ind_k[jmx] = i;
         ind_i[jmx] = j;
         is_sig_present[jmx] =
-            std::max({q[lqs].x[oned_vec_index], q[lqi].x[oned_vec_index],
-                      q[lqg].x[oned_vec_index]}) > qmin;
+            get_max_3(q[lqs].x[oned_vec_index], q[lqi].x[oned_vec_index],
+                      q[lqg].x[oned_vec_index]) > qmin;
       }
 
       #pragma acc loop seq

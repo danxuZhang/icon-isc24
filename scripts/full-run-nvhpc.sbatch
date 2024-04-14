@@ -35,7 +35,7 @@ rm -rf $SEQ_BUILD $ACC_BUILD
 
 export CC=nvc
 export CXX=nvc++
-export SEQ_FLAGS=" -O3 -std=c++17 -Wall -Wextra "
+export SEQ_FLAGS=" -O2 -std=c++17 -Wall -Wextra "
 export ACC_FLAGS=" -acc=$ACC_TARGET -gpu=managed -gpu=sm_80 -gpu=fastmath -Minfo=accel -fast $SEQ_FLAGS"
 
 echo "Building Sequential: "
