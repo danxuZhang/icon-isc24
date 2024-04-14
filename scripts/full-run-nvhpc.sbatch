@@ -54,6 +54,14 @@ cmake -DMU_IMPL=openacc -DMU_ENABLE_TESTS=OFF \
     -B $ACC_BUILD -S .
 cmake --build $ACC_BUILD --parallel 2>&1 | tee acc_build.log
 
+echo "Running Sequential 20k:"
+$SEQ_BUILD/bin/graupel ./tasks/20k.nc
+rm output.nc
+
+echo "Running OpenACC: 20k"
+$ACC_BUILD/bin/graupel ./tasks/20k.nc
+rm output.nc
+
 echo "Running Sequential:"
 $SEQ_BUILD/bin/graupel ./tasks/$INPUT
 
@@ -65,3 +73,9 @@ echo "Evaulating OpenACC Result: "
 mv output.nc acc_output.nc
 cdo infon -sub acc_output.nc seq_output.nc
 # cdo infon -sub output.nc reference_results/sequential_double_$INPUT
+
+rm acc_output.nc seq_output.nc
+nsys profile --trace=cuda,openacc --stats=true --gpu-metrics-device all -o 20k-128-128-128-exp3 $ACC_BUILD/bin/graupel ./tasks/20k.nc
+rm output.nc
+nsys profile --trace=cuda,openacc --stats=true --gpu-metrics-device all -o 1500k-128-128-128-exp3 $ACC_BUILD/bin/graupel ./tasks/1500k.nc
+rm output.nc
