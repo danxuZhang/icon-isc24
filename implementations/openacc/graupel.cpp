@@ -97,10 +97,6 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
     kmin[i] = (size_t*) malloc(np * sizeof(size_t));
   } // first level with condensate
 
-  real_t cv, vc, eta, zeta, qvsi, qice, qliq, qtot, dvsw, dvsw0, dvsi, n_ice,
-      m_ice, x_ice, n_snow, l_snow, ice_dep, e_int, stot, xrho;
-
-  real_t update[3]; // scratch array with output from precipitation step
   auto eflx = (real_t*) malloc(nvec * sizeof(real_t)); // internal energy flux from precipitation (W/m2 )
   real_t** vt = (real_t**) malloc(nvec * sizeof(real_t*));
   for (size_t i = 0; i < nvec; ++i) {
@@ -120,21 +116,20 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   q[4] = {emptyArray, qc};
   q[5] = {emptyArray, qv};
 
-  size_t jmx = 0;
-  size_t jmx_ = jmx;
+  size_t jmx_ = 0;
 
   // The loop is intentionally i<nlev; since we are using an unsigned integer
   // data type, when i reaches 0, and you try to decrement further, (to -1), it
   // wraps to the maximum value representable by size_t.
   auto loop1_start = std::chrono::steady_clock::now();
-  size_t oned_vec_index;
   #pragma acc parallel 
   #pragma acc loop seq 
   for  (size_t it = 0; it < ke; ++it) {
     const size_t i = ke - 1 - it;
-    #pragma acc loop private(oned_vec_index, jmx)
+    size_t jmx = 0;
+    #pragma acc loop
     for (size_t j = ivstart; j < ivend; j++) {
-      oned_vec_index = i * ivend + j;
+      size_t oned_vec_index = i * ivend + j;
       if ((std::max({q[lqc].x[oned_vec_index], q[lqr].x[oned_vec_index],
                      q[lqs].x[oned_vec_index], q[lqi].x[oned_vec_index],
                      q[lqg].x[oned_vec_index]}) > qmin) or
@@ -172,12 +167,8 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   std::cout << "time for loop one: " << loop1_duration.count() << "ms" << std::endl;
 
   auto loop2_start = std::chrono::steady_clock::now();
-  size_t k, iv;
-  real_t sx2x_sum;
   // TODO parallelize, likely independent operations
-  #pragma acc parallel loop private(k, iv, oned_vec_index, dvsw, qvsi, dvsi, n_snow, l_snow) \
-                            private(n_ice, m_ice, x_ice, eta, ice_dep, dvsw0) \
-                            private(stot, qice, qliq, qtot, cv, sx2x_sum) 
+  #pragma acc parallel loop
   for (size_t j = 0; j < jmx_; j++) {
     real_t sx2x[nx][nx];
     for (size_t i = 0; i < nx; ++i) {
@@ -189,17 +180,17 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
     real_t sink[nx];
     real_t dqdt[nx];
 
-    k = ind_k[j];
-    iv = ind_i[j];
-    oned_vec_index = k * ivend + iv;
+    size_t k = ind_k[j];
+    size_t iv = ind_i[j];
+    size_t oned_vec_index = k * ivend + iv;
 
-    dvsw = q[lqv].x[oned_vec_index] -
+    real_t dvsw = q[lqv].x[oned_vec_index] -
            qsat_rho(t[oned_vec_index], rho[oned_vec_index]);
-    qvsi = qsat_ice_rho(t[oned_vec_index], rho[oned_vec_index]);
-    dvsi = q[lqv].x[oned_vec_index] - qvsi;
-    n_snow = snow_number(t[oned_vec_index], rho[oned_vec_index],
+    real_t qvsi = qsat_ice_rho(t[oned_vec_index], rho[oned_vec_index]);
+    real_t dvsi = q[lqv].x[oned_vec_index] - qvsi;
+    real_t n_snow = snow_number(t[oned_vec_index], rho[oned_vec_index],
                          q[lqs].x[oned_vec_index]);
-    l_snow = snow_lambda(rho[oned_vec_index], q[lqs].x[oned_vec_index], n_snow);
+    real_t l_snow = snow_lambda(rho[oned_vec_index], q[lqs].x[oned_vec_index], n_snow);
 
     sx2x[lqc][lqr] = cloud_to_rain(t[oned_vec_index], q[lqc].x[oned_vec_index],
                                    q[lqr].x[oned_vec_index], qnc);
@@ -215,6 +206,9 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
     sx2x[lqc][lqg] =
         cloud_to_graupel(t[oned_vec_index], rho[oned_vec_index],
                          q[lqc].x[oned_vec_index], q[lqg].x[oned_vec_index]);
+
+    real_t n_ice, m_ice, x_ice;
+    real_t eta, ice_dep;
 
     if (t[oned_vec_index] < tmelt) {
       n_ice = ice_number(t[oned_vec_index], rho[oned_vec_index]);
@@ -259,7 +253,7 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
     }
 
     if (is_sig_present[j]) {
-      dvsw0 = q[lqv].x[oned_vec_index] - qsat_rho(tmelt, rho[oned_vec_index]);
+      real_t dvsw0 = q[lqv].x[oned_vec_index] - qsat_rho(tmelt, rho[oned_vec_index]);
       sx2x[lqv][lqs] =
           vapor_x_snow(t[oned_vec_index], p[oned_vec_index],
                        rho[oned_vec_index], q[lqs].x[oned_vec_index], n_snow,
@@ -288,7 +282,7 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
         for (size_t i = 0; i < nx; i++) {
           sink[qx_ind[ix]] = sink[qx_ind[ix]] + sx2x[qx_ind[ix]][i];
         }
-        stot = q[qx_ind[ix]].x[oned_vec_index] / dt;
+        real_t stot = q[qx_ind[ix]].x[oned_vec_index] / dt;
 
         if ((sink[qx_ind[ix]] > stot) &&
             (q[qx_ind[ix]].x[oned_vec_index] > qmin)) {
@@ -305,7 +299,7 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
 
     #pragma acc loop seq
     for (size_t ix = 0; ix < nx; ix++) {
-      sx2x_sum = 0;
+      real_t sx2x_sum = 0;
       #pragma acc loop seq
       for (size_t i = 0; i < nx; i++) {
         sx2x_sum = sx2x_sum + sx2x[i][qx_ind[ix]];
@@ -315,11 +309,11 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
           0.0, q[qx_ind[ix]].x[oned_vec_index] + dqdt[qx_ind[ix]] * dt);
     }
 
-    qice = q[lqs].x[oned_vec_index] + q[lqi].x[oned_vec_index] +
+    real_t qice = q[lqs].x[oned_vec_index] + q[lqi].x[oned_vec_index] +
            q[lqg].x[oned_vec_index];
-    qliq = q[lqc].x[oned_vec_index] + q[lqr].x[oned_vec_index];
-    qtot = q[lqv].x[oned_vec_index] + qice + qliq;
-    cv = cvd + (cvv - cvd) * qtot + (clw - cvv) * qliq +
+    real_t qliq = q[lqc].x[oned_vec_index] + q[lqr].x[oned_vec_index];
+    real_t qtot = q[lqv].x[oned_vec_index] + qice + qliq;
+    real_t cv = cvd + (cvv - cvd) * qtot + (clw - cvv) * qliq +
          (ci - cvv) * qice; // qtot? or qv?
     t[oned_vec_index] =
         t[oned_vec_index] +
@@ -334,36 +328,36 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   std::cout << "time for loop two: " << loop2_duration.count() << "ms" << std::endl;
 
 
-  size_t kp1;
   size_t k_end = (lrain) ? ke : kstart - 1;
   auto loop3_start = std::chrono::steady_clock::now();
   #pragma acc parallel 
   #pragma acc loop seq 
   for (size_t k = kstart; k < k_end; k++) {
-    # pragma acc loop private(oned_vec_index, kp1, qliq, qice, e_int, zeta, xrho, vc, update)
+    # pragma acc loop 
     for (size_t iv = ivstart; iv < ivend; iv++) {
-      oned_vec_index = k * ivend + iv;
+      size_t oned_vec_index = k * ivend + iv;
       if (k == kstart) {
         eflx[iv] = 0.0;
       }
 
-      kp1 = std::min(ke - 1, k + 1);
+      size_t kp1 = std::min(ke - 1, k + 1);
       if (k >= get_min_element(kmin[iv], np)) {
-        qliq = q[lqc].x[oned_vec_index] + q[lqr].x[oned_vec_index];
-        qice = q[lqs].x[oned_vec_index] + q[lqi].x[oned_vec_index] +
+        real_t qliq = q[lqc].x[oned_vec_index] + q[lqr].x[oned_vec_index];
+        real_t qice = q[lqs].x[oned_vec_index] + q[lqi].x[oned_vec_index] +
                q[lqg].x[oned_vec_index];
 
-        e_int =
+        real_t e_int =
             internal_energy(t[oned_vec_index], q[lqv].x[oned_vec_index], qliq,
                             qice, rho[oned_vec_index], dz[oned_vec_index]) +
             eflx[iv];
-        zeta = dt / (2.0 * dz[oned_vec_index]);
-        xrho = std::sqrt(rho_00 / rho[oned_vec_index]);
+        real_t zeta = dt / (2.0 * dz[oned_vec_index]);
+        real_t xrho = std::sqrt(rho_00 / rho[oned_vec_index]);
 
         #pragma acc loop seq 
         for (size_t ix = 0; ix < np; ix++) {
           if (k >= kmin[iv][qp_ind[ix]]) {
-            vc = vel_scale_factor(qp_ind[ix], xrho, rho[oned_vec_index],
+            real_t update[3];
+            real_t vc = vel_scale_factor(qp_ind[ix], xrho, rho[oned_vec_index],
                                   t[oned_vec_index],
                                   q[qp_ind[ix]].x[oned_vec_index]);
             precip(params[qp_ind[ix]], update, zeta, vc, q[qp_ind[ix]].p[iv],
