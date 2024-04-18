@@ -94,16 +94,24 @@ void precip(const real_t (&params)[3], real_t (&precip)[3], real_t zeta,
   precip[2] = vc * fall_speed(rho_x, params); // vt
 }
 
-void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
-             size_t &kstart, real_t &dt, array_1d_t<real_t> &dz_v,
+void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
+             size_t &kstart_, real_t &dt_, array_1d_t<real_t> &dz_v,
              array_1d_t<real_t> &t_v, array_1d_t<real_t> &rho_v,
              array_1d_t<real_t> &p_v, array_1d_t<real_t> &qv_v,
              array_1d_t<real_t> &qc_v, array_1d_t<real_t> &qi_v,
              array_1d_t<real_t> &qr_v, array_1d_t<real_t> &qs_v,
-             array_1d_t<real_t> &qg_v, real_t &qnc, array_1d_t<real_t> &prr_gsp_v,
+             array_1d_t<real_t> &qg_v, real_t &qnc_, array_1d_t<real_t> &prr_gsp_v,
              array_1d_t<real_t> &pri_gsp_v, array_1d_t<real_t> &prs_gsp_v,
              array_1d_t<real_t> &prg_gsp_v, array_1d_t<real_t> &pflx_v) {
   std::cout << "openacc graupel" << std::endl;
+
+  const size_t nvec = nvec_;
+  const size_t ke = ke_;
+  const size_t ivstart = ivstart_;
+  const size_t ivend = ivend_;
+  const size_t kstart = kstart_;
+  const real_t dt = dt_;
+  const real_t qnc = qnc_;
 
   auto dz = dz_v.data();
   auto t = t_v.data();
@@ -121,37 +129,36 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   auto prg_gsp = prg_gsp_v.data();
   auto pflx = pflx_v.data();
 
+  auto is_sig_present = (bool*) acc_malloc(nvec * ke * sizeof(bool)); // is snow, ice or graupel present?
 
-  auto is_sig_present = (bool*) malloc(nvec * ke * sizeof(bool)); // is snow, ice or graupel present?
+  auto ind_k = (size_t*) acc_malloc(nvec * ke * sizeof(size_t)); // k index of gathered point
+  auto ind_i = (size_t*) acc_malloc(nvec * ke * sizeof(size_t)); // iv index of gathered point
 
-  auto ind_k = (size_t*) malloc(nvec * ke * sizeof(size_t)); // k index of gathered point
-  auto ind_i = (size_t*) malloc(nvec * ke * sizeof(size_t)); // iv index of gathered point
-
-  auto kmin = (size_t*) malloc(nvec * np * sizeof(size_t));
+  auto eflx = (real_t*) acc_malloc(nvec * sizeof(real_t)); // internal energy flux from precipitation (W/m2 )
   
-  auto vt = (real_t*) malloc(nvec * np * sizeof(real_t));
-  #pragma acc parallel loop
+  auto kmin = (size_t*) acc_malloc(nvec * np * sizeof(size_t));
+
+  auto vt = (real_t*) acc_malloc(nvec * np * sizeof(real_t));
+  #pragma acc parallel deviceptr(vt) 
+  #pragma acc loop 
   for (size_t i = 0; i < nvec * np; ++i) {
     vt[i] = 0.0;
   }
 
-  auto eflx = (real_t*) malloc(nvec * sizeof(real_t)); // internal energy flux from precipitation (W/m2 )
-
-  t_qx_ptr q[6]; // vector of pointers to point to four hydrometeor inouts
-  q[0] = {prr_gsp, qr, qr_v.size()};
-  q[1] = {pri_gsp, qi, qi_v.size()};
-  q[2] = {prs_gsp, qs, qs_v.size()};
-  q[3] = {prg_gsp, qg, qg_v.size()};
-
-  q[4] = {nullptr, qc, qc_v.size()};
-  q[5] = {nullptr, qv, qv_v.size()};
+  constexpr size_t nq = 6;
+  t_qx_ptr q[nq]; // vector of pointers to point to four hydrometeor inouts
+  q[0] = t_qx_ptr(prr_gsp_v.data(), qr_v.data(), qr_v.size());
+  q[1] = t_qx_ptr(pri_gsp_v.data(), qi_v.data(), qi_v.size());
+  q[2] = t_qx_ptr(prs_gsp_v.data(), qs_v.data(), qs_v.size());
+  q[3] = t_qx_ptr(prg_gsp_v.data(), qg_v.data(), qg_v.size());
+  q[4] = t_qx_ptr(nullptr, qc_v.data(), qc_v.size());
+  q[5] = t_qx_ptr(nullptr, qv_v.data(), qv_v.size());
 
   size_t jmx_ = 0;
 
-  // The loop is intentionally i<nlev; since we are using an unsigned integer
-  // data type, when i reaches 0, and you try to decrement further, (to -1), it
-  // wraps to the maximum value representable by size_t.
-  #pragma acc parallel vector_length(128) async
+  #pragma acc parallel \
+              vector_length(128) \
+              deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx)
   #pragma acc loop seq 
   for  (size_t it = 0; it < ke; ++it) {
     const size_t i = ke - 1 - it;
@@ -191,7 +198,10 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
     }
   }
 
-  #pragma acc parallel vector_length(128) async loop gang vector 
+  #pragma acc parallel \
+            vector_length(128) \
+            deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx) 
+  #pragma acc loop gang vector 
   for (size_t j = 0; j < jmx_; j++) {
     real_t sx2x[nx][nx];
     for (size_t i = 0; i < nx; ++i) {
@@ -344,7 +354,9 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
 
 
   const size_t k_end = (lrain) ? ke : kstart - 1;
-  #pragma acc parallel async vector_length(128)
+  #pragma acc parallel \
+              vector_length(128) \
+              deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx) 
   #pragma acc loop seq 
   for (size_t k = kstart; k < k_end; k++) {
     # pragma acc loop gang vector
@@ -400,10 +412,10 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
     }
   }
 
-  free(is_sig_present);
-  free(vt);
-  free(kmin);
-  free(ind_k);
-  free(ind_i);
-  free(eflx);
+  acc_free(is_sig_present);
+  acc_free(vt);
+  acc_free(kmin);
+  acc_free(ind_k);
+  acc_free(ind_i);
+  acc_free(eflx);
 }
