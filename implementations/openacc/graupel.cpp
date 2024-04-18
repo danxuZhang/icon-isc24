@@ -28,6 +28,7 @@ using namespace graupel_ct;
 struct t_qx_ptr {
   t_qx_ptr() : p(nullptr), x(nullptr), sz(0) {}
   t_qx_ptr(array_1d_t<real_t> &p_, array_1d_t<real_t> &x_) : p(p_.data()), x(x_.data()), sz(p_.size()) {}
+  t_qx_ptr(real_t* p_, real_t* x_, size_t sz_) : p(p_), x(x_), sz(sz_) {}
 
   real_t* p;
   real_t* x;
@@ -90,27 +91,43 @@ void precip(const real_t (&params)[3], real_t (&precip)[3], real_t zeta,
 }
 
 void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
-             size_t &kstart, real_t &dt, array_1d_t<real_t> &dz,
-             array_1d_t<real_t> &t, array_1d_t<real_t> &rho,
-             array_1d_t<real_t> &p, array_1d_t<real_t> &qv,
-             array_1d_t<real_t> &qc, array_1d_t<real_t> &qi,
-             array_1d_t<real_t> &qr, array_1d_t<real_t> &qs,
-             array_1d_t<real_t> &qg, real_t &qnc, array_1d_t<real_t> &prr_gsp,
-             array_1d_t<real_t> &pri_gsp, array_1d_t<real_t> &prs_gsp,
-             array_1d_t<real_t> &prg_gsp, array_1d_t<real_t> &pflx) {
+             size_t &kstart, real_t &dt, array_1d_t<real_t> &dz_v,
+             array_1d_t<real_t> &t_v, array_1d_t<real_t> &rho_v,
+             array_1d_t<real_t> &p_v, array_1d_t<real_t> &qv_v,
+             array_1d_t<real_t> &qc_v, array_1d_t<real_t> &qi_v,
+             array_1d_t<real_t> &qr_v, array_1d_t<real_t> &qs_v,
+             array_1d_t<real_t> &qg_v, real_t &qnc, array_1d_t<real_t> &prr_gsp_v,
+             array_1d_t<real_t> &pri_gsp_v, array_1d_t<real_t> &prs_gsp_v,
+             array_1d_t<real_t> &prg_gsp_v, array_1d_t<real_t> &pflx_v) {
   std::cout << "openacc graupel" << std::endl;
+
+  auto dz = dz_v.data();
+  auto t = t_v.data();
+  auto rho = rho_v.data();
+  auto p = p_v.data();
+  auto qv = qv_v.data();
+  auto qc = qc_v.data();
+  auto qi = qi_v.data();
+  auto qr = qr_v.data();
+  auto qs = qs_v.data();
+  auto qg = qg_v.data();
+  auto prr_gsp = prr_gsp_v.data();
+  auto pri_gsp = pri_gsp_v.data();
+  auto prs_gsp = prs_gsp_v.data();
+  auto prg_gsp = prg_gsp_v.data();
+  auto pflx = pflx_v.data();
+
 
   auto is_sig_present = (bool*) malloc(nvec * ke * sizeof(bool)); // is snow, ice or graupel present?
 
   auto ind_k = (size_t*) malloc(nvec * ke * sizeof(size_t)); // k index of gathered point
   auto ind_i = (size_t*) malloc(nvec * ke * sizeof(size_t)); // iv index of gathered point
 
+  // TODO 2d array to flatten
   auto kmin = (size_t**) malloc(nvec * sizeof(size_t*));
   for (size_t i = 0; i < nvec; ++i) {
     kmin[i] = (size_t*) malloc(np * sizeof(size_t));
   } // first level with condensate
-
-  auto eflx = (real_t*) malloc(nvec * sizeof(real_t)); // internal energy flux from precipitation (W/m2 )
   real_t** vt = (real_t**) malloc(nvec * sizeof(real_t*));
   for (size_t i = 0; i < nvec; ++i) {
     vt[i] = (real_t*) malloc(np * sizeof(real_t));
@@ -119,15 +136,16 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
     }
   }
 
-  t_qx_ptr q[6]; // vector of pointers to point to four hydrometeor inouts
-  array_1d_t<real_t> emptyArray;
-  q[0] = {prr_gsp, qr};
-  q[1] = {pri_gsp, qi};
-  q[2] = {prs_gsp, qs};
-  q[3] = {prg_gsp, qg};
+  auto eflx = (real_t*) malloc(nvec * sizeof(real_t)); // internal energy flux from precipitation (W/m2 )
 
-  q[4] = {emptyArray, qc};
-  q[5] = {emptyArray, qv};
+  t_qx_ptr q[6]; // vector of pointers to point to four hydrometeor inouts
+  q[0] = {prr_gsp, qr, qr_v.size()};
+  q[1] = {pri_gsp, qi, qi_v.size()};
+  q[2] = {prs_gsp, qs, qs_v.size()};
+  q[3] = {prg_gsp, qg, qg_v.size()};
+
+  q[4] = {nullptr, qc, qc_v.size()};
+  q[5] = {nullptr, qv, qv_v.size()};
 
   size_t jmx_ = 0;
 
