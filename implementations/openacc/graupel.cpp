@@ -60,6 +60,10 @@ inline auto get_max_3(T a, T b, T c) -> T {
   return std::max(max1, c);
 }
 
+inline size_t get_flattented_idx(size_t x, size_t y, size_t width) {
+  return x * width + y;
+}
+
 /**
  * @brief TODO
  *
@@ -123,17 +127,12 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   auto ind_k = (size_t*) malloc(nvec * ke * sizeof(size_t)); // k index of gathered point
   auto ind_i = (size_t*) malloc(nvec * ke * sizeof(size_t)); // iv index of gathered point
 
-  // TODO 2d array to flatten
-  auto kmin = (size_t**) malloc(nvec * sizeof(size_t*));
-  for (size_t i = 0; i < nvec; ++i) {
-    kmin[i] = (size_t*) malloc(np * sizeof(size_t));
-  } // first level with condensate
-  real_t** vt = (real_t**) malloc(nvec * sizeof(real_t*));
-  for (size_t i = 0; i < nvec; ++i) {
-    vt[i] = (real_t*) malloc(np * sizeof(real_t));
-    for (size_t j = 0; j < np; ++j) {
-      vt[i][j] = 0.0;
-    }
+  auto kmin = (size_t*) malloc(nvec * np * sizeof(size_t));
+  
+  auto vt = (real_t*) malloc(nvec * np * sizeof(real_t));
+  #pragma acc parallel loop
+  for (size_t i = 0; i < nvec * np; ++i) {
+    vt[i] = 0.0;
   }
 
   auto eflx = (real_t*) malloc(nvec * sizeof(real_t)); // internal energy flux from precipitation (W/m2 )
@@ -180,13 +179,13 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
 
       for (size_t ix = 0; ix < np; ix++) {
         if (i == (ke - 1)) {
-          kmin[j][qp_ind[ix]] = ke + 1;
+          kmin[get_flattented_idx(j, qp_ind[ix], np)] = ke + 1;
           q[qp_ind[ix]].p[j] = 0.0;
-          vt[j][ix] = 0.0;
+          vt[get_flattented_idx(j, ix, np)] = 0.0;
         }
 
         if (q[qp_ind[ix]].x[oned_vec_index] > qmin) {
-          kmin[j][qp_ind[ix]] = i;
+          kmin[get_flattented_idx(j, qp_ind[ix], np)] = i;
         }
       }
     }
@@ -356,7 +355,7 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       }
 
       size_t kp1 = std::min(ke - 1, k + 1);
-      if (k >= get_min_element(kmin[iv], np)) {
+      if (k >= get_min_element(&kmin[iv*np], np)) {
         real_t qliq = q[lqc].x[oned_vec_index] + q[lqr].x[oned_vec_index];
         real_t qice = q[lqs].x[oned_vec_index] + q[lqi].x[oned_vec_index] +
                q[lqg].x[oned_vec_index];
@@ -369,17 +368,17 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
         real_t xrho = std::sqrt(rho_00 / rho[oned_vec_index]);
 
         for (size_t ix = 0; ix < np; ix++) {
-          if (k >= kmin[iv][qp_ind[ix]]) {
+          if (k >= kmin[get_flattented_idx(iv, qp_ind[ix], np)]) {
             real_t update[3];
             real_t vc = vel_scale_factor(qp_ind[ix], xrho, rho[oned_vec_index],
                                   t[oned_vec_index],
                                   q[qp_ind[ix]].x[oned_vec_index]);
             precip(params[qp_ind[ix]], update, zeta, vc, q[qp_ind[ix]].p[iv],
-                   vt[iv][ix], q[qp_ind[ix]].x[oned_vec_index],
+                   vt[get_flattented_idx(iv, ix, np)], q[qp_ind[ix]].x[oned_vec_index],
                    q[qp_ind[ix]].x[kp1 * ivend + iv], rho[oned_vec_index]);
             q[qp_ind[ix]].x[oned_vec_index] = update[0];
             q[qp_ind[ix]].p[iv] = update[1];
-            vt[iv][ix] = update[2];
+            vt[get_flattented_idx(iv, ix, np)] = update[2];
           }
         }
 
@@ -401,10 +400,6 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
     }
   }
 
-  for (size_t i = 0; i < nvec; ++i) {
-    free(vt[i]);
-    free(kmin[i]);
-  }
   free(is_sig_present);
   free(vt);
   free(kmin);
