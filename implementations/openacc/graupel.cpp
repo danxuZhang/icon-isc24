@@ -155,9 +155,8 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   q[5] = t_qx_ptr(nullptr, qv_v.data(), qv_v.size());
 
   size_t jmx_ = 0;
-
-  #pragma acc parallel \
-              vector_length(128) \
+  #pragma acc parallel async \
+              vector_length(32) \
               deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx)
   #pragma acc loop seq 
   for  (size_t it = 0; it < ke; ++it) {
@@ -198,8 +197,8 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
     }
   }
 
-  #pragma acc parallel \
-            vector_length(128) \
+  #pragma acc parallel async \
+            vector_length(64) \
             deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx) 
   #pragma acc loop gang vector 
   for (size_t j = 0; j < jmx_; j++) {
@@ -352,10 +351,9 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
             cv;
   }
 
-
   const size_t k_end = (lrain) ? ke : kstart - 1;
-  #pragma acc parallel \
-              vector_length(128) \
+  #pragma acc parallel async \
+              vector_length(64) \
               deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx) 
   #pragma acc loop seq 
   for (size_t k = kstart; k < k_end; k++) {
