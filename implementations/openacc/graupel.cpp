@@ -129,16 +129,16 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   auto prg_gsp = prg_gsp_v.data();
   auto pflx = pflx_v.data();
 
-  auto is_sig_present = (bool*) acc_malloc(nvec * ke * sizeof(bool)); // is snow, ice or graupel present?
+  auto is_sig_present = (bool*) malloc(nvec * ke * sizeof(bool)); // is snow, ice or graupel present?
 
-  auto ind_k = (size_t*) acc_malloc(nvec * ke * sizeof(size_t)); // k index of gathered point
-  auto ind_i = (size_t*) acc_malloc(nvec * ke * sizeof(size_t)); // iv index of gathered point
+  auto ind_k = (size_t*) malloc(nvec * ke * sizeof(size_t)); // k index of gathered point
+  auto ind_i = (size_t*) malloc(nvec * ke * sizeof(size_t)); // iv index of gathered point
 
-  auto eflx = (real_t*) acc_malloc(nvec * sizeof(real_t)); // internal energy flux from precipitation (W/m2 )
+  auto eflx = (real_t*) malloc(nvec * sizeof(real_t)); // internal energy flux from precipitation (W/m2 )
   
-  auto kmin = (size_t*) acc_malloc(nvec * np * sizeof(size_t));
+  auto kmin = (size_t*) malloc(nvec * np * sizeof(size_t));
 
-  auto vt = (real_t*) acc_malloc(nvec * np * sizeof(real_t));
+  auto vt = (real_t*) malloc(nvec * np * sizeof(real_t));
   #pragma acc parallel deviceptr(vt) 
   #pragma acc loop 
   for (size_t i = 0; i < nvec * np; ++i) {
@@ -365,7 +365,7 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   // auto loop3_start = std::chrono::steady_clock::now();
   const size_t k_end = (lrain) ? ke : kstart - 1;
   #pragma acc parallel async \
-              vector_length(256) \
+              vector_length(64) \
               deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx) 
   #pragma acc loop seq 
   for (size_t k = kstart; k < k_end; k++) {
@@ -431,10 +431,10 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   // auto loop3_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop3_end - loop3_start);
   // std::cout << "time for loop three: " << loop3_duration.count() << "ms" << std::endl;
 
-  acc_free(is_sig_present);
-  acc_free(vt);
-  acc_free(kmin);
-  acc_free(ind_k);
-  acc_free(ind_i);
-  acc_free(eflx);
+  free(is_sig_present);
+  free(vt);
+  free(kmin);
+  free(ind_k);
+  free(ind_i);
+  free(eflx);
 }
