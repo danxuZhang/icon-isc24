@@ -154,6 +154,7 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   q[4] = t_qx_ptr(nullptr, qc_v.data(), qc_v.size());
   q[5] = t_qx_ptr(nullptr, qv_v.data(), qv_v.size());
 
+  // auto loop1_start = std::chrono::steady_clock::now();
   size_t jmx_ = 0;
   #pragma acc parallel async \
               vector_length(32) \
@@ -162,6 +163,9 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   for  (size_t it = 0; it < ke; ++it) {
     const size_t i = ke - 1 - it;
     size_t jmx = 0;
+    #pragma acc cache(q[lqc].x[i*ivend:(i+1)*ivend], q[lqr].x[i*ivend:(i+1)*ivend], q[lqs].x[i*ivend:(i+1)*ivend], \
+                      q[lqi].x[i*ivend:(i+1)*ivend], q[lqg].x[i*ivend:(i+1)*ivend], t[i*ivend:(i+1)*ivend], \
+                      rho[i*ivend:(i+1)*ivend])
     #pragma acc loop gang vector
     for (size_t j = ivstart; j < ivend; j++) {
       size_t oned_vec_index = i * ivend + j;
@@ -196,7 +200,11 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
       }
     }
   }
+  // auto loop1_end = std::chrono::steady_clock::now();
+  // auto loop1_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop1_end - loop1_start);
+  // std::cout << "time for loop one: " << loop1_duration.count() << "ms" << std::endl;
 
+  // auto loop2_start = std::chrono::steady_clock::now();
   #pragma acc parallel async \
             vector_length(64) \
             deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx) 
@@ -350,10 +358,14 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
                  (lsc - (ci - cvv) * t[oned_vec_index])) /
             cv;
   }
+  // auto loop2_end = std::chrono::steady_clock::now();
+  // auto loop2_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop2_end - loop2_start);
+  // std::cout << "time for loop two: " << loop2_duration.count() << "ms" << std::endl;
 
+  // auto loop3_start = std::chrono::steady_clock::now();
   const size_t k_end = (lrain) ? ke : kstart - 1;
   #pragma acc parallel async \
-              vector_length(64) \
+              vector_length(256) \
               deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx) 
   #pragma acc loop seq 
   for (size_t k = kstart; k < k_end; k++) {
@@ -365,6 +377,12 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
       }
 
       size_t kp1 = std::min(ke - 1, k + 1);
+      size_t kp1_index = kp1 * ivend + iv;
+      #pragma acc cache(vt[iv*np:iv*np+np]) 
+      #pragma acc cache(t[oned_vec_index:kp1_index+1], rho[oned_vec_index:kp1_index+1], dz[oned_vec_index:kp1_index+1])
+      #pragma acc cache(q[lqc].x[oned_vec_index:kp1_index+1], q[lqr].x[oned_vec_index:kp1_index+1])
+      #pragma acc cache(q[lqs].x[oned_vec_index:kp1_index+1], q[lqi].x[oned_vec_index:kp1_index+1], \
+                    q[lqg].x[oned_vec_index:kp1_index+1])
       if (k >= get_min_element(&kmin[iv*np], np)) {
         real_t qliq = q[lqc].x[oned_vec_index] + q[lqr].x[oned_vec_index];
         real_t qice = q[lqs].x[oned_vec_index] + q[lqi].x[oned_vec_index] +
@@ -409,6 +427,9 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
       }
     }
   }
+  // auto loop3_end = std::chrono::steady_clock::now();
+  // auto loop3_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop3_end - loop3_start);
+  // std::cout << "time for loop three: " << loop3_duration.count() << "ms" << std::endl;
 
   acc_free(is_sig_present);
   acc_free(vt);

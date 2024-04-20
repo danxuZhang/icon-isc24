@@ -11,6 +11,7 @@ compile_commands.json
 
 tasks/1500k.nc
 *.log
+*.nc
 output.nc
 *output*.nc
 build/
