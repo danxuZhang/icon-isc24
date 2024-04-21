@@ -11,7 +11,8 @@
 ulimit -s unlimited
 ulimit -c 0
 
-module load nvhpc
+module purge
+module load nvhpc/23.9-gcc-11.2.0
 module load gcc/.12.3.0-gcc-11.2.0-nvptx
 export LD_LIBRARY_PATH=/sw/spack-levante/gcc-12.3.0-ab6j4u/lib64:$LD_LIBRARY_PATH
 
