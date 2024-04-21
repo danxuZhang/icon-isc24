@@ -297,7 +297,7 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   * atmospheric variables and hydrometeor interactions to update the state of each significant cell.
   */
   #pragma acc parallel async \
-            vector_length(64) \
+            vector_length(128) \
             deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx) 
   #pragma acc loop gang vector 
   for (size_t j = 0; j < jmx_; j++) {
@@ -490,7 +490,7 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   */
   const size_t k_end = (lrain) ? ke : kstart - 1;
   #pragma acc parallel async \
-              vector_length(64) \
+              vector_length(256) \
               deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx) 
   #pragma acc loop seq 
   for (size_t k = kstart; k < k_end; k++) {
