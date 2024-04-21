@@ -29,22 +29,33 @@ constexpr real_t c2_vs = 0.241897;
 constexpr real_t c3_vs = 0.28003;
 constexpr real_t c4_vs = -0.146293E-6;
 
+
+
 /**
- * @brief TODO
- * @param [in] t Temperature
- * @param [in] p Ambient pressure
- * @param [in] rho Ambient density
- * @param [in] qs Snow specific mass
- * @param [in] ns Snow number
- * @param [in] lambda  Slope parameter (lambda) snow
- * @param [in] eta Deposition factor
- * @param [in] ice_dep Limiter for vapor dep on snow
- * @param [in] dvsw qv-qsat_water(T)
- * @param [in] dvsi  qv-qsat_ice(T)
- * @param [in] dvsw0 qv-qsat_water(T0)
- * @param [in] dt Time step
- * @return Rate of vapor deposition to snow
+ * @brief Calculates the rate of vapor deposition to snow
+ *
+ * This function calculates the rate at which water vapor is deposited onto snow particles,
+ * or the rate at which snow particles sublimate, depending on the ambient conditions and
+ * the state of the snow. The deposition/sublimation rate is based on temperature, pressure,
+ * density, snow specific mass, snow number concentration, slope parameter (lambda),
+ * deposition factor, and various other parameters.
+ *
+ * @param [in] t Temperature (K)
+ * @param [in] p Ambient pressure (Pa)
+ * @param [in] rho Ambient density (kg/m^3)
+ * @param [in] qs Snow specific mass (kg/kg)
+ * @param [in] ns Snow number concentration (1/kg)
+ * @param [in] lambda Slope parameter (lambda) for snow size distribution (1/m)
+ * @param [in] eta Deposition factor (dimensionless)
+ * @param [in] ice_dep Limiter for vapor deposition on snow (kg/kg/s)
+ * @param [in] dvsw qv - qsat_water(T) (kg/kg)
+ * @param [in] dvsi qv - qsat_ice(T) (kg/kg)
+ * @param [in] dvsw0 qv - qsat_water(T0) (kg/kg)
+ * @param [in] dt Time step (s)
+ * @return The rate of vapor deposition to snow (kg/kg/s)
  */
+
+
 TARGET real_t vapor_x_snow(real_t t, real_t p, real_t rho, real_t qs, real_t ns,
                            real_t lambda, real_t eta, real_t ice_dep,
                            real_t dvsw, real_t dvsi, real_t dvsw0, real_t dt) {

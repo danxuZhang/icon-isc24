@@ -31,19 +31,21 @@ constexpr real_t x2 = 2.60e-10;        // separating mass between cloud and rain
 constexpr real_t x1 = 9.44e+09;        // kernel coeff for SB2001 autoconversion
 
 /**
- * @brief TODO
- * @details
- * Kessler (1969) autoconversion rate
- *    scau = zccau * MAX( qc_ik - qc0, 0.0 )
- *    scac = zcac  * qc_ik * zeln7o8qrk
- * Seifert and Beheng (2001) autoconversion rate
- * with constant cloud droplet number concentration qnc
+ * @brief Calculates the conversion rate from cloud water to rain water.
  *
- * @param [in] t Temperature
- * @param [in] qc Cloud water specific mass
- * @param [in] qr Rain water specific mass
- * @param [in] nc Cloud water number concentration
- * @return conversion rate
+ * @details This function calculates the conversion rate from cloud water to rain water using either the Kessler (1969) or Seifert and Beheng (2001) autoconversion rate.
+ *
+ * Kessler (1969) autoconversion rate:
+ * scau = zccau * MAX( qc_ik - qc0, 0.0 )
+ * scac = zcac * qc_ik * zeln7o8qrk
+ *
+ * Seifert and Beheng (2001) autoconversion rate with constant cloud droplet number concentration qnc.
+ *
+ * @param [in] t Temperature (K).
+ * @param [in] qc Cloud water specific mass (kg/kg).
+ * @param [in] qr Rain water specific mass (kg/kg).
+ * @param [in] nc Cloud water number concentration (1/kg).
+ * @return The conversion rate from cloud water to rain water (kg/kg/s).
  */
 TARGET real_t cloud_to_rain(real_t t, real_t qc, real_t qr, real_t nc) {
   const real_t au_kernel =

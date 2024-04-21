@@ -4,7 +4,17 @@
 C++ prototypes of [muphys](https://gitlab.dkrz.de/icon-libraries/muphys) project using heterogeneous libraries and C extensions.
 
 ## Documentation
-Online documentation is generated automatically using `doxygen` .
+Online documentation is generated automatically using `doxygen`, there are 2 ways to generate the documention using doxygen
+1. CLI
+ * Configure `Doxyfile` with output format (default is only HTML), input and output dir (liines 12 & 128)
+ * Run `doxygen Doxyfile`
+
+2. Doxygen GUI wizard
+ * Add the icon image, directory path, and output path
+ * Check "scan recrusively"
+ * Check "All entities"
+ * Modify output format and output settings
+ * Run 
 
 ## Installation
 

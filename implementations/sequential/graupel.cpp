@@ -106,7 +106,6 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   // The loop is intentionally i<nlev; since we are using an unsigned integer
   // data type, when i reaches 0, and you try to decrement further, (to -1), it
   // wraps to the maximum value representable by size_t.
-  auto loop1_start = std::chrono::steady_clock::now();
   size_t oned_vec_index;
   for (size_t i = ke - 1; i < ke; --i) {
     for (size_t j = ivstart; j < ivend; j++) {
@@ -139,14 +138,9 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       }
     }
   }
-  auto loop1_end = std::chrono::steady_clock::now();
-  auto loop1_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop1_end - loop1_start);
-  std::cout << "time for loop one: " << loop1_duration.count() << "ms" << std::endl;
 
-  auto loop2_start = std::chrono::steady_clock::now();
   size_t k, iv;
   real_t sx2x_sum;
-  // TODO parallelize, likely independent operations
   for (size_t j = 0; j < jmx_; j++) {
     k = ind_k[j];
     iv = ind_i[j];
@@ -261,8 +255,6 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       }
     }
 
-    // TODO parallelize for reduce
-    // #pragma acc kernels
     for (size_t ix = 0; ix < nx; ix++) {
       sx2x_sum = 0;
       for (size_t i = 0; i < nx; i++) {
@@ -292,15 +284,10 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       std::fill(v.begin(), v.end(), 0);
     }
   }
-  auto loop2_end = std::chrono::steady_clock::now();
-  auto loop2_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop2_end - loop2_start);
-  std::cout << "time for loop two: " << loop2_duration.count() << "ms" << std::endl;
 
 
   size_t kp1;
   size_t k_end = (lrain) ? ke : kstart - 1;
-  auto loop3_start = std::chrono::steady_clock::now();
-  // TODO grid operations, possilbe parallelization
   for (size_t k = kstart; k < k_end; k++) {
     for (size_t iv = ivstart; iv < ivend; iv++) {
       oned_vec_index = k * ivend + iv;
@@ -352,7 +339,4 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       }
     }
   }
-  auto loop3_end = std::chrono::steady_clock::now();
-  auto loop3_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop3_end - loop3_start);
-  std::cout << "time for loop three: " << loop3_duration.count() << "ms" << std::endl;
 }

@@ -21,13 +21,19 @@ constexpr real_t a_rim = 4.43;
 constexpr real_t b_rim = 0.94878;
 
 /**
- * @brief TODO
+ * @brief Calculates the graupel riming rate from cloud water.
  *
- * @param [in] t Temperature
- * @param [in] rho Ambient density
- * @param [in] qc Snow specific mass
- * @param [in] qg Graupel specific mass
- * @return Graupel riming rate
+ * This function calculates the rate at which cloud water is converted to graupel through the
+ * riming process. The riming rate is based on the temperature, ambient density, and the
+ * specific masses of cloud water and graupel. If the minimum of cloud water and graupel
+ * specific masses is below a threshold (graupel_ct::qmin) or the temperature is below the
+ * homogeneous freezing threshold (graupel_ct::tfrz_hom), the riming rate is set to zero.
+ *
+ * @param [in] t Temperature (K).
+ * @param [in] rho Ambient density (kg/m^3).
+ * @param [in] qc Cloud water specific mass (kg/kg).
+ * @param [in] qg Graupel specific mass (kg/kg).
+ * @return The Graupel riming rate (kg/kg/s).
  */
 TARGET real_t cloud_to_graupel(real_t t, real_t rho, real_t qc, real_t qg) {
 

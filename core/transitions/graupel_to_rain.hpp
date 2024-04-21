@@ -20,20 +20,20 @@ namespace transition {
 constexpr real_t c1_melt = 12.31698;    // Constants in melting formula
 constexpr real_t c2_melt = 7.39441e-05; // Constants in melting formula
 constexpr real_t a_melt =
-    graupel_ct::tx - static_cast<real_t>(389.5); // melting prefactor
+    graupel_ct::tx - static_cast<real_t>(389.5); ///< melting prefactor
 constexpr real_t b_melt =
-    static_cast<real_t>(3.0) / static_cast<real_t>(5.0); // melting exponent
+    static_cast<real_t>(3.0) / static_cast<real_t>(5.0); ///< melting exponent
 
 /**
- * @brief Melting of graupel to form rain
- *
- * @param [in] t Ambient temperature
- * @param [in] p Ambient pressure
- * @param [in] rho Ambient density
- * @param [in] dvsw0 qv-qsat_water(T0)
- * @param [in] qg graupel specific mass
- * @return TODO
- */
+* @brief Melting of graupel to form rain
+*
+* @param [in] t Ambient temperature (K)
+* @param [in] p Ambient pressure (Pa)
+* @param [in] rho Ambient density (kg/m^3)
+* @param [in] dvsw0 qv-qsat_water(T0) (kg/kg)
+* @param [in] qg graupel specific mass (kg/kg)
+* @return The melting rate of graupel to form rain, change in the mass of graupel per unit mass of the mixture per unit time. (kg/kg/s)
+*/
 TARGET real_t graupel_to_rain(real_t t, real_t p, real_t rho, real_t dvsw0,
                               real_t qg) {
 

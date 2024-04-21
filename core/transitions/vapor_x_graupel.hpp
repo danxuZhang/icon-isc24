@@ -27,19 +27,25 @@ constexpr real_t a7 = 0.0418521;
 constexpr real_t a8 = -4.7524E-8;
 constexpr real_t b_vg = 0.6;
 
+
 /**
- * @brief Graupel-vapor exchange rate
- *
- * @param [in] t Temperature
- * @param [in] p Ambient pressure
- * @param [in] rho Ambient density
- * @param [in] qg Graupel specific mass
- * @param [in] dvsw qv-qsat_water(T)
- * @param [in] dvsi qv-qsat_ice(T)
- * @param [in] dvsw0 qv-qsat_water(T0)
- * @param [in] dt Time step
- * @return  TODO
- */
+* @brief Calculates the graupel-vapor exchange rate
+*
+* This function calculates the exchange rate between graupel and water vapor,
+* which can be positive (deposition) or negative (sublimation), depending on
+* the ambient conditions and the state of the graupel.
+*
+* @param [in] t Temperature (K)
+* @param [in] p Ambient pressure (Pa)
+* @param [in] rho Ambient density (kg/m^3)
+* @param [in] qg Graupel specific mass (kg/kg)
+* @param [in] dvsw qv - qsat_water(T) (kg/kg)
+* @param [in] dvsi qv - qsat_ice(T) (kg/kg)
+* @param [in] dvsw0 qv - qsat_water(T0) (kg/kg)
+* @param [in] dt Time step (s)
+* @return The graupel-vapor exchange rate (kg/kg/s)
+*/
+
 TARGET real_t vapor_x_graupel(real_t t, real_t p, real_t rho, real_t qg,
                               real_t dvsw, real_t dvsi, real_t dvsw0,
                               real_t dt) {

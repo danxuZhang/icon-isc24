@@ -17,14 +17,19 @@
 
 namespace property {
 
-constexpr real_t mi_max = 1.0e-09; // maximum mass of cloud ice crystals
+constexpr real_t mi_max = 1.0e-09; ///< maximum mass of cloud ice crystals (kg)
 
 /**
- * @brief TODO
- * @param [in] qi Ice specific mass
- * @param [in] ni Ice crystal number
- * @return ice mass
- */
+* @brief Calculates the mass of an individual ice crystal.
+*
+* This function calculates the mass of an individual ice crystal based on the
+* specific mass of ice and the ice crystal number concentration. The mass is
+* constrained to be within a certain range defined by graupel_ct::m0_ice and mi_max.
+*
+* @param [in] qi Specific mass of ice (kg/kg).
+* @param [in] ni Ice crystal number concentration (1/kg).
+* @return The mass of an individual ice crystal (kg).
+*/
 TARGET real_t ice_mass(real_t qi, real_t ni) {
   return fmax(graupel_ct::m0_ice, fmin(qi / ni, mi_max));
 }
