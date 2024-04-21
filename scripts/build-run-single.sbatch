@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=ka1273_gpu
-#SBATCH --job-name=icon
+#SBATCH --job-name=icon-single
 #SBATCH --partition=gpu
 #SBATCH --gpus=1
 #SBATCH --output=%x.%j.log
