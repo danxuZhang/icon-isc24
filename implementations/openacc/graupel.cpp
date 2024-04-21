@@ -25,6 +25,16 @@ using namespace transition;
 using namespace idx;
 using namespace graupel_ct;
 
+/**
+ * @struct t_qx_ptr
+ * @brief Holds pointers to data arrays and their size for various hydrometeor types.
+ * 
+ * This structure is designed to manage arrays related to the properties of hydrometeors,
+ * such as concentration, mass, volume, etc. It simplifies passing these arrays around
+ * by encapsulating the pointers to the data and the size of the arrays in a single object.
+ * @param p_ Reference to an array of real numbers for the first set of properties.
+ * @param x_ Reference to an array of real numbers for the second set of properties.
+ */
 struct t_qx_ptr {
   t_qx_ptr() : p(nullptr), x(nullptr), sz(0) {}
   t_qx_ptr(array_1d_t<real_t> &p_, array_1d_t<real_t> &x_) : p(p_.data()), x(x_.data()), sz(p_.size()) {}
@@ -36,7 +46,18 @@ struct t_qx_ptr {
 }; // pointer vector
 
 template<typename T>
-inline auto get_min_element(T* arr, size_t sz) -> T{
+/**
+ * @brief Finds the minimum element in an array.
+ * 
+ * This template function iterates over an array of any type that supports comparison
+ * and identifies the minimum value contained within the array. It's a generic function
+ * that can operate on arrays of integers, floats, or any other comparable types.
+ * 
+ * @param arr Pointer to the first element of the array to be searched.
+ * @param sz The size of the array.
+ * @return The minimum element found in the array.
+ * @tparam T The type of the elements in the array. This type must support comparison operations.
+ */auto get_min_element(T* arr, size_t sz) -> T{
   T min_ele = arr[0];
   for (size_t i = 0; i < sz; ++i) {
     if (arr[i] < min_ele) {
@@ -64,20 +85,31 @@ inline size_t get_flattented_idx(size_t x, size_t y, size_t width) {
   return x * width + y;
 }
 
-/**
- * @brief TODO
- *
- * @param precip time step for integration of microphysics  (s)
- * @param params fall speed parameters
- * @param zeta dt/(2dz)
- * @param vc state dependent fall speed correction
- * @param flx flux into cell from above
- * @param vt terminal velocity
- * @param q specific mass of hydrometeor
- * @param q_kp1 specific mass in next lower cell
- * @param rho density
- */
+
 #pragma acc routine seq
+/**
+ * @brief Simulates the update of precipitation in a grid cell over a time step.
+ *
+ * This function models the dynamics of precipitation within a grid cell, including
+ * the accumulation or reduction of precipitation mass, the flux of precipitation
+ * into the cell from the cell directly above, and the calculation of terminal
+ * velocity of precipitation particles. It takes into account the physical properties
+ * of the air and precipitation, such as air density and fall speed parameters, to
+ * update the state of precipitation in the cell and its impact on adjacent cells.
+ *
+ * @param params An array of real_t containing parameters related to the fall speed of precipitation.
+ * @param precip An array of real_t where the updated precipitation values will be stored.
+ *               - precip[0] will contain the updated specific mass of hydrometeors (how much precipitation is present).
+ *               - precip[1] will contain the flux of precipitation into the cell from above.
+ *               - precip[2] will contain the updated terminal velocity of the precipitation particles.
+ * @param zeta The ratio of the time step for integration (dt) to twice the vertical distance between grid cells (2dz).
+ * @param vc The correction factor for the fall speed, which is state dependent (e.g., adjusted for local atmospheric conditions).
+ * @param flx The flux of precipitation entering the cell from the cell directly above at the start of the time step.
+ * @param vt The terminal velocity of precipitation particles (assumed constant for the time step).
+ * @param q The specific mass of hydrometeors (precipitation) in the cell at the start of the time step.
+ * @param q_kp1 The specific mass of hydrometeors in the cell directly below at the start of the time step.
+ * @param rho The density of air in the cell.
+ */
 void precip(const real_t (&params)[3], real_t (&precip)[3], real_t zeta,
             real_t vc, real_t flx, real_t vt, real_t q, real_t q_kp1,
             real_t rho) {
@@ -94,6 +126,46 @@ void precip(const real_t (&params)[3], real_t (&precip)[3], real_t zeta,
   precip[2] = vc * fall_speed(rho_x, params); // vt
 }
 
+
+/**
+ * @brief Models the dynamics of graupel, snow, and ice precipitation within a model grid.
+ *
+ * This function simulates the microphysical processes affecting graupel, snow, and ice 
+ * within a grid-based model of the atmosphere. It accounts for the formation, growth,
+ * and fallout of these hydrometeors through the atmospheric column. The function updates the
+ * state of each cell in terms of hydrometeor mass, flux, and related properties, considering
+ * atmospheric conditions like temperature and density.
+ *
+ * @param [in] nvec Number of horizontal points
+ * @param [in] ke Number of grid points in vertical direction
+ * @param [in] ivstart Start index for horizontal direction
+ * @param [in] ivend End index for horizontal direction
+ * @param [in] kstart Start index for vertical direction
+ * @param [in] dt Time step for integration of microphysics (s)
+ * @param [in] dz Layer thickness of full levels (m)
+ * @param [inout] t Temperature in Kelvin
+ * @param [in] rho Density of moist air (kg/m3)
+ * @param [in] p Pressure (Pa)
+ * @param [inout] qv Specific water vapor content (kg/kg)
+ * @param [inout] qc Specific cloud water content (kg/kg)
+ * @param [inout] qi Specific cloud ice content (kg/kg)
+ * @param [inout] qr Specific rain content (kg/kg)
+ * @param [inout] qs Specific snow content  kg/kg)
+ * @param [inout] qg Specific graupel content (kg/kg)
+ * @param [in] qnc Cloud number concentration
+ * @param [out] prr_gsp Precipitation rate of rain, grid-scale (kg/(m2*s))
+ * @param [out] pri_gsp Precipitation rate of ice, grid-scale (kg/(m2*s))
+ * @param [out] prs_gsp Precipitation rate of snow, grid-scale (kg/(m2*s))
+ * @param [out] prg_gsp Precipitation rate of graupel, grid-scale (kg/(m2*s))
+ * @param [out] pflx Total precipitation flux
+ *
+ * @details
+ * The function operates by first identifying cells where significant hydrometeor processes are
+ * expected to occur in loop 1, then applying microphysical transformations for significant cells
+ * in loops 2 and finally updateshydrometeor states (such as mass and number concentration) in loop 3.
+ * These updates are based on ambient atmospheric conditions
+ * and the interactions between different hydrometeor types.
+ */
 void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
              size_t &kstart_, real_t &dt_, array_1d_t<real_t> &dz_v,
              array_1d_t<real_t> &t_v, array_1d_t<real_t> &rho_v,
@@ -134,8 +206,10 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   auto ind_k = (size_t*) malloc(nvec * ke * sizeof(size_t)); // k index of gathered point
   auto ind_i = (size_t*) malloc(nvec * ke * sizeof(size_t)); // iv index of gathered point
 
-  auto eflx = (real_t*) malloc(nvec * sizeof(real_t)); // internal energy flux from precipitation (W/m2 )
-  
+  auto eflx = (real_t*) malloc(nvec * sizeof(real_t)); // internal energy flux from precipitation (W/m2)
+
+  // 2D array that tracks the lowest vertical level (kmin) at which condensate 
+  // (water in its liquid or solid form) is present for each vector.
   auto kmin = (size_t*) malloc(nvec * np * sizeof(size_t));
 
   auto vt = (real_t*) malloc(nvec * np * sizeof(real_t));
@@ -155,26 +229,35 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   q[5] = t_qx_ptr(nullptr, qv_v.data(), qv_v.size());
 
   // auto loop1_start = std::chrono::steady_clock::now();
+  /**
+  * @brief Loop 1
+  * Traverses the simulation grid to identify cells where significant atmospheric processes are occurring.
+  * by iterating over the vertical and horizontal dimensions of the simulation grid, then
+  * identifying grid cells where significant atmospheric processes are expected to occur. The loop starts from
+  * the top layer and moves downward, slicing horizontal layers vertically.
+  */
   size_t jmx_ = 0;
   #pragma acc parallel async \
               vector_length(32) \
               deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx)
   #pragma acc loop seq 
   for  (size_t it = 0; it < ke; ++it) {
-    const size_t i = ke - 1 - it;
+    const size_t i = ke - 1 - it; // start from top layer and go down
     size_t jmx = 0;
     #pragma acc cache(q[lqc].x[i*ivend:(i+1)*ivend], q[lqr].x[i*ivend:(i+1)*ivend], q[lqs].x[i*ivend:(i+1)*ivend], \
                       q[lqi].x[i*ivend:(i+1)*ivend], q[lqg].x[i*ivend:(i+1)*ivend], t[i*ivend:(i+1)*ivend], \
                       rho[i*ivend:(i+1)*ivend])
     #pragma acc loop gang vector
-    for (size_t j = ivstart; j < ivend; j++) {
+    for (size_t j = ivstart; j < ivend; j++) { // now slice horizontal layers vertically
       size_t oned_vec_index = i * ivend + j;
+
+      // Determines if the current cell (i, j) is significant based on two criteria:
       if ((get_max_5(q[lqc].x[oned_vec_index], q[lqr].x[oned_vec_index],
                      q[lqs].x[oned_vec_index], q[lqi].x[oned_vec_index],
                      q[lqg].x[oned_vec_index]) > qmin) or
           ((t[oned_vec_index] < tfrz_het2) and
            (q[lqv].x[oned_vec_index] >
-            qsat_ice_rho(t[oned_vec_index], rho[oned_vec_index])))) {
+            qsat_ice_rho(t[oned_vec_index], rho[oned_vec_index])))) { 
         #pragma acc atomic capture 
         {
         jmx = jmx_;
@@ -205,29 +288,44 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   // std::cout << "time for loop one: " << loop1_duration.count() << "ms" << std::endl;
 
   // auto loop2_start = std::chrono::steady_clock::now();
+
+  /**
+  * @brief Loop 2 
+  * simulates the microphysical processes within the atmosphere at significant cells.By 
+  * iterating over the significant cells identified in loop 1 and performs calculations
+  * to model the microphysical processes occurring within those cells. It considers various
+  * atmospheric variables and hydrometeor interactions to update the state of each significant cell.
+  */
   #pragma acc parallel async \
             vector_length(64) \
             deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx) 
   #pragma acc loop gang vector 
   for (size_t j = 0; j < jmx_; j++) {
-    real_t sx2x[nx][nx];
+    real_t sx2x[nx][nx]; // two-dimensional array used to store conversion rates 
+                         // between different types at the point being processed.
+    // sx2x[i][j] could represent the rate at which hydrometeor type i is converted into type j within a given time step in the simulation.
     for (size_t i = 0; i < nx; ++i) {
       for (size_t j_ = 0; j_ < nx; ++j_) {
         sx2x[i][j_] = 0.0;
       }
     }
 
-    real_t sink[nx];
-    real_t dqdt[nx];
+    real_t sink[nx]; // track the cumulative effects of all sink processes of each hydrometeor type
+    real_t dqdt[nx]; // rate of net decrease over time
 
     size_t k = ind_k[j];
     size_t iv = ind_i[j];
-    size_t oned_vec_index = k * ivend + iv;
+    size_t oned_vec_index = k * ivend + iv; // flattens the two-dimensional grid location (k, iv) 
+    // into a one-dimensional array index for accessing atmospheric data arrays.
+
 
     real_t dvsw = q[lqv].x[oned_vec_index] -
            qsat_rho(t[oned_vec_index], rho[oned_vec_index]);
     real_t qvsi = qsat_ice_rho(t[oned_vec_index], rho[oned_vec_index]);
     real_t dvsi = q[lqv].x[oned_vec_index] - qvsi;
+    // Differences between actual vapor content and saturation vapor content (drive phase changes)
+
+
     real_t n_snow = snow_number(t[oned_vec_index], rho[oned_vec_index],
                          q[lqs].x[oned_vec_index]);
     real_t l_snow = snow_lambda(rho[oned_vec_index], q[lqs].x[oned_vec_index], n_snow);
@@ -255,6 +353,8 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
       m_ice = ice_mass(q[lqi].x[oned_vec_index], n_ice);
       x_ice = ice_sticking(t[oned_vec_index]);
 
+
+      // If significant hydrometeors (like snow, ice, or graupel) are present 
       if (is_sig_present[j]) {
         eta = deposition_factor(
             t[oned_vec_index],
@@ -294,10 +394,17 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
 
     if (is_sig_present[j]) {
       real_t dvsw0 = q[lqv].x[oned_vec_index] - qsat_rho(tmelt, rho[oned_vec_index]);
+      // difference between the actual water vapor content (q[lqv].x[oned_vec_index]) 
+      // and the saturation vapor pressure at the melting point temperature (tmelt), 
+      // for the given air density (rho). 
+      // Indicates how far the current state is from saturation.
+
       sx2x[lqv][lqs] =
           vapor_x_snow(t[oned_vec_index], p[oned_vec_index],
                        rho[oned_vec_index], q[lqs].x[oned_vec_index], n_snow,
                        l_snow, eta, ice_dep, dvsw, dvsi, dvsw0, dt);
+
+      // ensure that the calculated transformation rates do not fall into physically impossible values
       sx2x[lqs][lqv] = -std::fmin(sx2x[lqv][lqs], 0.0);
       sx2x[lqv][lqs] = std::fmax(sx2x[lqv][lqs], 0.0);
       sx2x[lqv][lqg] = vapor_x_graupel(
@@ -313,6 +420,9 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
                           rho[oned_vec_index], dvsw0, q[lqg].x[oned_vec_index]);
     }
 
+
+    // After calculating the exchange rates between hydrometeor types, 
+    // the loop updates the concentrations (dqdt)
     for (size_t ix = 0; ix < nx; ix++) {
       sink[qx_ind[ix]] = 0.0;
       if ((is_sig_present[j]) or (qx_ind[ix] == lqc) or (qx_ind[ix] == lqv) or
@@ -334,6 +444,8 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
       }
     }
 
+    // ensures conservation by making sure that increases in one hydrometeor type 
+    // are balanced by decreases in others (e.g., cloud water, if rain is formed by condensation).
     for (size_t ix = 0; ix < nx; ix++) {
       real_t sx2x_sum = 0;
       for (size_t i = 0; i < nx; i++) {
@@ -358,11 +470,24 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
                  (lsc - (ci - cvv) * t[oned_vec_index])) /
             cv;
   }
+  // basically update to the overall atmospheric state at each significant point, 
+
+
   // auto loop2_end = std::chrono::steady_clock::now();
   // auto loop2_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop2_end - loop2_start);
   // std::cout << "time for loop two: " << loop2_duration.count() << "ms" << std::endl;
 
   // auto loop3_start = std::chrono::steady_clock::now();
+
+
+  /**
+  * @brief Loop 3
+  * Simulates vertical transport and captures feedback between precipitation and atmospheric conditions.
+  * by traversing each vertical and horizontal cell of the simulation grid, simulating the vertical
+  * transport of precipitation and capturing the feedback between precipitation-phase changes and atmospheric
+  * conditions. It adjusts hydrometeor concentrations and velocities, and updates temperature based on latent
+  * heat exchange. 
+  */
   const size_t k_end = (lrain) ? ke : kstart - 1;
   #pragma acc parallel async \
               vector_length(64) \
@@ -383,7 +508,7 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
       #pragma acc cache(q[lqc].x[oned_vec_index:kp1_index+1], q[lqr].x[oned_vec_index:kp1_index+1])
       #pragma acc cache(q[lqs].x[oned_vec_index:kp1_index+1], q[lqi].x[oned_vec_index:kp1_index+1], \
                     q[lqg].x[oned_vec_index:kp1_index+1])
-      if (k >= get_min_element(&kmin[iv*np], np)) {
+      if (k >= get_min_element(&kmin[iv*np], np)) { // feedback between precipitation processes and atmospheric conditions
         real_t qliq = q[lqc].x[oned_vec_index] + q[lqr].x[oned_vec_index];
         real_t qice = q[lqs].x[oned_vec_index] + q[lqi].x[oned_vec_index] +
                q[lqg].x[oned_vec_index];
@@ -395,12 +520,17 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
         real_t zeta = dt / (2.0 * dz[oned_vec_index]);
         real_t xrho = std::sqrt(rho_00 / rho[oned_vec_index]);
 
+
+        // simulate how precipitation and its associated energy 
+        // move vertically through the atmosphere.
         for (size_t ix = 0; ix < np; ix++) {
           if (k >= kmin[get_flattented_idx(iv, qp_ind[ix], np)]) {
             real_t update[3];
             real_t vc = vel_scale_factor(qp_ind[ix], xrho, rho[oned_vec_index],
                                   t[oned_vec_index],
                                   q[qp_ind[ix]].x[oned_vec_index]);
+
+            // simulates precipitation processes, adjusting the vertical distribution of different hydrometeors
             precip(params[qp_ind[ix]], update, zeta, vc, q[qp_ind[ix]].p[iv],
                    vt[get_flattented_idx(iv, ix, np)], q[qp_ind[ix]].x[oned_vec_index],
                    q[qp_ind[ix]].x[kp1 * ivend + iv], rho[oned_vec_index]);
@@ -411,6 +541,8 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
         }
 
         pflx[oned_vec_index] = q[lqs].p[iv] + q[lqi].p[iv] + q[lqg].p[iv];
+        
+        // updates the flux of energy (eflx) associated with precipitation, 
         eflx[iv] =
             dt * (q[lqr].p[iv] * (clw * t[oned_vec_index] -
                                   cvd * t[kp1 * ivend + iv] - lvc) +
@@ -421,6 +553,8 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
         qice = q[lqs].x[oned_vec_index] + q[lqi].x[oned_vec_index] +
                q[lqg].x[oned_vec_index];
         e_int = e_int - eflx[iv];
+
+        // The temperature at each grid point is adjusted based on the updated internal energy
         t[oned_vec_index] =
             T_from_internal_energy(e_int, q[lqv].x[oned_vec_index], qliq, qice,
                                    rho[oned_vec_index], dz[oned_vec_index]);

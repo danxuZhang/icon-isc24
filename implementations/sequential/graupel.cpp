@@ -29,17 +29,27 @@ struct t_qx_ptr {
 }; // pointer vector
 
 /**
- * @brief TODO
+ * @brief Simulates the update of precipitation in a grid cell over a time step.
  *
- * @param precip time step for integration of microphysics  (s)
- * @param params fall speed parameters
- * @param zeta dt/(2dz)
- * @param vc state dependent fall speed correction
- * @param flx flux into cell from above
- * @param vt terminal velocity
- * @param q specific mass of hydrometeor
- * @param q_kp1 specific mass in next lower cell
- * @param rho density
+ * This function models the dynamics of precipitation within a grid cell, including
+ * the accumulation or reduction of precipitation mass, the flux of precipitation
+ * into the cell from the cell directly above, and the calculation of terminal
+ * velocity of precipitation particles. It takes into account the physical properties
+ * of the air and precipitation, such as air density and fall speed parameters, to
+ * update the state of precipitation in the cell and its impact on adjacent cells.
+ *
+ * @param params An array of real_t containing parameters related to the fall speed of precipitation.
+ * @param precip An array of real_t where the updated precipitation values will be stored.
+ *               - precip[0] will contain the updated specific mass of hydrometeors (how much precipitation is present).
+ *               - precip[1] will contain the flux of precipitation into the cell from above.
+ *               - precip[2] will contain the updated terminal velocity of the precipitation particles.
+ * @param zeta The ratio of the time step for integration (dt) to twice the vertical distance between grid cells (2dz).
+ * @param vc The correction factor for the fall speed, which is state dependent (e.g., adjusted for local atmospheric conditions).
+ * @param flx The flux of precipitation entering the cell from the cell directly above at the start of the time step.
+ * @param vt The terminal velocity of precipitation particles (assumed constant for the time step).
+ * @param q The specific mass of hydrometeors (precipitation) in the cell at the start of the time step.
+ * @param q_kp1 The specific mass of hydrometeors in the cell directly below at the start of the time step.
+ * @param rho The density of air in the cell.
  */
 void precip(const real_t (&params)[3], real_t (&precip)[3], real_t zeta,
             real_t vc, real_t flx, real_t vt, real_t q, real_t q_kp1,
