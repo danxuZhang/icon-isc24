@@ -19,11 +19,12 @@
  * provides a data structure well suited to high efficiency on distributed memory parallel computers.
  * 
  * \section Moditfications
- * This code focuses on calculations made on graupel. We have also implemented parallised code using openACC. 
+ * We implemented parallised code using openACC. There are also code changes such as changing C++ vectors to C arrays, variable visiblity, and allocation of variables onto GPU memory
+ * 
  * 
  * \subsection Notes
- * - kg/kg represents the specific mass, which is the mass of a particular component (e.g., ice) per unit mass of the mixture (e.g., moist air).
- * - 
+ * - The unit kg/kg appears for some functions which represents the specific mass, which is the mass of a particular component (e.g., ice) per unit mass of the mixture (e.g., moist air).
+ * 
  */
 
 
