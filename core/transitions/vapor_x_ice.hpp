@@ -22,14 +22,22 @@ constexpr real_t b_exp =
     -0.67; // exp. for conv. (-1 + 0.33) of ice mass to sfc area
 
 /**
- * @brief TODO
- * @param [in] qi Specific humidity of ice
- * @param [in] mi Ice crystal mass
- * @param [in] eta Deposition factor
- * @param [in] dvsi Vapor excess with respect to ice sat
- * @param [in] dt Time step
- * @return Rate of vapor deposition to ice
+ * @brief Calculates the rate of vapor deposition to ice
+ *
+ * This function calculates the rate at which water vapor is deposited onto ice crystals,
+ * or the rate at which ice crystals sublimate, depending on the ambient conditions and
+ * the state of the ice. The deposition/sublimation rate is based on the specific humidity
+ * of ice, ice crystal mass, deposition factor, vapor excess with respect to ice saturation,
+ * and the time step.
+ *
+ * @param [in] qi Specific humidity of ice (kg/kg)
+ * @param [in] mi Ice crystal mass (kg)
+ * @param [in] eta Deposition factor (dimensionless)
+ * @param [in] dvsi Vapor excess with respect to ice saturation (kg/kg)
+ * @param [in] dt Time step (s)
+ * @return The rate of vapor deposition to ice (kg/kg/s)
  */
+
 TARGET real_t vapor_x_ice(real_t qi, real_t mi, real_t eta, real_t dvsi,
                           real_t dt) {
   const real_t a_fact =

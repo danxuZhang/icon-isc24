@@ -21,13 +21,14 @@ constexpr real_t a_rim_ct = 0.5; /// Constants in riming formula
 constexpr real_t b_rim_ct = static_cast<real_t>(3.0) / static_cast<real_t>(4.0);
 
 /**
- * @brief TODO
- * @param [in] t ambient temperature
- * @param [in] rho ambient density
- * @param [in] qc cloud specific mass
- * @param [in] qs snow specific mass
- * @returns convertion rate
- */
+* @brief Calculates the conversion rate from snow to graupel through riming
+*
+* @param [in] t Ambient temperature (K)
+* @param [in] rho Ambient density (kg/m^3)
+* @param [in] qc Cloud specific mass (kg/kg)
+* @param [in] qs Snow specific mass (kg/kg)
+* @returns The conversion rate from snow to graupel (kg/kg/s)
+*/
 TARGET real_t snow_to_graupel(real_t t, real_t rho, real_t qc, real_t qs) {
 
   return (fmin(qc, qs) > graupel_ct::qmin && t > graupel_ct::tfrz_hom)

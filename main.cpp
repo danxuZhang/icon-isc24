@@ -9,6 +9,25 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // ---------------------------------------------------------------
 //
+
+/*!
+ * \mainpage ICON graupel Documentation
+ * \section Introduction
+ * ICON, or Icosahedral Nonhydrostatic, is a operational localised and global numerical weather prediction model 
+ * run by Deutscher Wetterdienst, the German national meteorological service. This model's approach of using icosahedral grid 
+ * points at a resolution at 13 km avoided the disadvantages of spectral techniques as well as the pole problem in latitude–longitude grids and 
+ * provides a data structure well suited to high efficiency on distributed memory parallel computers.
+ * 
+ * \section Moditfications
+ * We implemented parallised code using openACC. There are also code changes such as changing C++ vectors to C arrays, variable visiblity, and allocation of variables onto GPU memory
+ * 
+ * 
+ * \subsection Notes
+ * - The unit kg/kg appears for some functions which represents the specific mass, which is the mass of a particular component (e.g., ice) per unit mass of the mixture (e.g., moist air).
+ * 
+ */
+
+
 #include <chrono>
 #include <cstdlib>
 #include <iostream>

@@ -29,17 +29,27 @@ struct t_qx_ptr {
 }; // pointer vector
 
 /**
- * @brief TODO
+ * @brief Simulates the update of precipitation in a grid cell over a time step.
  *
- * @param precip time step for integration of microphysics  (s)
- * @param params fall speed parameters
- * @param zeta dt/(2dz)
- * @param vc state dependent fall speed correction
- * @param flx flux into cell from above
- * @param vt terminal velocity
- * @param q specific mass of hydrometeor
- * @param q_kp1 specific mass in next lower cell
- * @param rho density
+ * This function models the dynamics of precipitation within a grid cell, including
+ * the accumulation or reduction of precipitation mass, the flux of precipitation
+ * into the cell from the cell directly above, and the calculation of terminal
+ * velocity of precipitation particles. It takes into account the physical properties
+ * of the air and precipitation, such as air density and fall speed parameters, to
+ * update the state of precipitation in the cell and its impact on adjacent cells.
+ *
+ * @param params An array of real_t containing parameters related to the fall speed of precipitation.
+ * @param precip An array of real_t where the updated precipitation values will be stored.
+ *               - precip[0] will contain the updated specific mass of hydrometeors (how much precipitation is present).
+ *               - precip[1] will contain the flux of precipitation into the cell from above.
+ *               - precip[2] will contain the updated terminal velocity of the precipitation particles.
+ * @param zeta The ratio of the time step for integration (dt) to twice the vertical distance between grid cells (2dz).
+ * @param vc The correction factor for the fall speed, which is state dependent (e.g., adjusted for local atmospheric conditions).
+ * @param flx The flux of precipitation entering the cell from the cell directly above at the start of the time step.
+ * @param vt The terminal velocity of precipitation particles (assumed constant for the time step).
+ * @param q The specific mass of hydrometeors (precipitation) in the cell at the start of the time step.
+ * @param q_kp1 The specific mass of hydrometeors in the cell directly below at the start of the time step.
+ * @param rho The density of air in the cell.
  */
 void precip(const real_t (&params)[3], real_t (&precip)[3], real_t zeta,
             real_t vc, real_t flx, real_t vt, real_t q, real_t q_kp1,
@@ -106,7 +116,6 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
   // The loop is intentionally i<nlev; since we are using an unsigned integer
   // data type, when i reaches 0, and you try to decrement further, (to -1), it
   // wraps to the maximum value representable by size_t.
-  auto loop1_start = std::chrono::steady_clock::now();
   size_t oned_vec_index;
   for (size_t i = ke - 1; i < ke; --i) {
     for (size_t j = ivstart; j < ivend; j++) {
@@ -139,14 +148,9 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       }
     }
   }
-  auto loop1_end = std::chrono::steady_clock::now();
-  auto loop1_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop1_end - loop1_start);
-  std::cout << "time for loop one: " << loop1_duration.count() << "ms" << std::endl;
 
-  auto loop2_start = std::chrono::steady_clock::now();
   size_t k, iv;
   real_t sx2x_sum;
-  // TODO parallelize, likely independent operations
   for (size_t j = 0; j < jmx_; j++) {
     k = ind_k[j];
     iv = ind_i[j];
@@ -261,8 +265,6 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       }
     }
 
-    // TODO parallelize for reduce
-    // #pragma acc kernels
     for (size_t ix = 0; ix < nx; ix++) {
       sx2x_sum = 0;
       for (size_t i = 0; i < nx; i++) {
@@ -292,15 +294,10 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       std::fill(v.begin(), v.end(), 0);
     }
   }
-  auto loop2_end = std::chrono::steady_clock::now();
-  auto loop2_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop2_end - loop2_start);
-  std::cout << "time for loop two: " << loop2_duration.count() << "ms" << std::endl;
 
 
   size_t kp1;
   size_t k_end = (lrain) ? ke : kstart - 1;
-  auto loop3_start = std::chrono::steady_clock::now();
-  // TODO grid operations, possilbe parallelization
   for (size_t k = kstart; k < k_end; k++) {
     for (size_t iv = ivstart; iv < ivend; iv++) {
       oned_vec_index = k * ivend + iv;
@@ -352,7 +349,4 @@ void graupel(size_t &nvec, size_t &ke, size_t &ivstart, size_t &ivend,
       }
     }
   }
-  auto loop3_end = std::chrono::steady_clock::now();
-  auto loop3_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop3_end - loop3_start);
-  std::cout << "time for loop three: " << loop3_duration.count() << "ms" << std::endl;
 }

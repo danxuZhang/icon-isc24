@@ -29,16 +29,16 @@ constexpr real_t a3_rv =
     19.0621E+0; // prefactor (from gamma dist. and properties of air/water)
 
 /**
- * @brief TODO
- *
- * @param [in] t Temperature
- * @param [in] rho Ambient density
- * @param [in] qc Specific humidity of cloud
- * @param [in] qr Specific humidity of rain
- * @param [in] dvsw qv - qsat_water(T)
- * @param [in] dt Time step
- * @return Mass from qc to qr
- */
+* @brief Calculates the mass transfer from rain to water vapor (evaporation)
+*
+* @param [in] t Temperature (K)
+* @param [in] rho Ambient density (kg/m^3)
+* @param [in] qc Specific humidity of cloud (kg/kg)
+* @param [in] qr Specific humidity of rain (kg/kg)
+* @param [in] dvsw qv - qsat_water(T) (kg/kg)
+* @param [in] dt Time step (s)
+* @return The mass transfer rate from rain to water vapor (kg/kg/s)
+*/
 TARGET real_t rain_to_vapor(real_t t, real_t rho, real_t qc, real_t qr,
                             real_t dvsw, real_t dt) {
 

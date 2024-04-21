@@ -18,15 +18,20 @@
 namespace property {
 
 /**
- * @brief Ice deposition nucleation
- * @param [in] t Temperature
- * @param [in] qc Specific humidity of ice
- * @param [in] qi Specific humidity of ice
- * @param [in] ni Ice crystal number
- * @param [in] dvsi Vapor excess with respect to ice sat
- * @param [in] dt Time step
- * @return Rate of vapor deposition for new ice
- */
+* @brief Calculates the rate of vapor deposition for new ice due to ice deposition nucleation.
+*
+* This function calculates the rate of vapor deposition for new ice crystals formed through
+* ice deposition nucleation. The rate is determined based on temperature, specific humidity of ice,
+* ice crystal number, vapor excess with respect to ice saturation, and the time step.
+*
+* @param [in] t Temperature (K).
+* @param [in] qc Specific humidity of cloud water (kg/kg).
+* @param [in] qi Specific humidity of ice (kg/kg).
+* @param [in] ni Ice crystal number concentration (1/kg).
+* @param [in] dvsi Vapor excess with respect to ice saturation (kg/kg).
+* @param [in] dt Time step (s).
+* @return The rate of vapor deposition for new ice (kg/kg/s).
+*/
 TARGET real_t ice_deposition_nucleation(real_t t, real_t qc, real_t qi,
                                         real_t ni, real_t dvsi, real_t dt) {
 
