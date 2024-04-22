@@ -213,8 +213,8 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   auto kmin = (size_t*) malloc(nvec * np * sizeof(size_t));
 
   auto vt = (real_t*) malloc(nvec * np * sizeof(real_t));
-  #pragma acc parallel deviceptr(vt) 
-  #pragma acc loop 
+  // #pragma acc parallel async
+  // #pragma acc loop 
   for (size_t i = 0; i < nvec * np; ++i) {
     vt[i] = 0.0;
   }
@@ -237,16 +237,14 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   * the top layer and moves downward, slicing horizontal layers vertically.
   */
   size_t jmx_ = 0;
-  #pragma acc parallel async \
-              vector_length(32) \
-              deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx)
+  #pragma acc parallel \
+              vector_length(64) 
   #pragma acc loop seq 
   for  (size_t it = 0; it < ke; ++it) {
     const size_t i = ke - 1 - it; // start from top layer and go down
     size_t jmx = 0;
-    #pragma acc cache(q[lqc].x[i*ivend:(i+1)*ivend], q[lqr].x[i*ivend:(i+1)*ivend], q[lqs].x[i*ivend:(i+1)*ivend], \
-                      q[lqi].x[i*ivend:(i+1)*ivend], q[lqg].x[i*ivend:(i+1)*ivend], t[i*ivend:(i+1)*ivend], \
-                      rho[i*ivend:(i+1)*ivend])
+    #pragma acc cache(q[lqc].x[i*ivend:ivend], q[lqr].x[i*ivend:ivend], q[lqs].x[i*ivend:ivend], \
+                      q[lqi].x[i*ivend:ivend], q[lqg].x[i*ivend:ivend])
     #pragma acc loop gang vector
     for (size_t j = ivstart; j < ivend; j++) { // now slice horizontal layers vertically
       size_t oned_vec_index = i * ivend + j;
@@ -296,9 +294,8 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   * to model the microphysical processes occurring within those cells. It considers various
   * atmospheric variables and hydrometeor interactions to update the state of each significant cell.
   */
-  #pragma acc parallel async \
-            vector_length(128) \
-            deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx) 
+  #pragma acc parallel  \
+            vector_length(128) 
   #pragma acc loop gang vector 
   for (size_t j = 0; j < jmx_; j++) {
     real_t sx2x[nx][nx]; // two-dimensional array used to store conversion rates 
@@ -489,9 +486,8 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
   * heat exchange. 
   */
   const size_t k_end = (lrain) ? ke : kstart - 1;
-  #pragma acc parallel async \
-              vector_length(256) \
-              deviceptr(is_sig_present, ind_k, ind_i, kmin, vt, eflx) 
+  #pragma acc parallel \
+              vector_length(256) 
   #pragma acc loop seq 
   for (size_t k = kstart; k < k_end; k++) {
     # pragma acc loop gang vector
@@ -502,12 +498,12 @@ void graupel(size_t &nvec_, size_t &ke_, size_t &ivstart_, size_t &ivend_,
       }
 
       size_t kp1 = std::min(ke - 1, k + 1);
-      size_t kp1_index = kp1 * ivend + iv;
-      #pragma acc cache(vt[iv*np:iv*np+np]) 
-      #pragma acc cache(t[oned_vec_index:kp1_index+1], rho[oned_vec_index:kp1_index+1], dz[oned_vec_index:kp1_index+1])
-      #pragma acc cache(q[lqc].x[oned_vec_index:kp1_index+1], q[lqr].x[oned_vec_index:kp1_index+1])
-      #pragma acc cache(q[lqs].x[oned_vec_index:kp1_index+1], q[lqi].x[oned_vec_index:kp1_index+1], \
-                    q[lqg].x[oned_vec_index:kp1_index+1])
+      // size_t kp1_index = kp1 * ivend + iv;
+      // // #pragma acc cache(vt[iv*np:iv*np+np]) 
+      // // #pragma acc cache(t[oned_vec_index:kp1_index+1], rho[oned_vec_index:kp1_index+1], dz[oned_vec_index:kp1_index+1])
+      // #pragma acc cache(q[lqc].x[oned_vec_index:kp1_index+1], q[lqr].x[oned_vec_index:kp1_index+1])
+      // #pragma acc cache(q[lqs].x[oned_vec_index:kp1_index+1], q[lqi].x[oned_vec_index:kp1_index+1], \
+      //               q[lqg].x[oned_vec_index:kp1_index+1])
       if (k >= get_min_element(&kmin[iv*np], np)) { // feedback between precipitation processes and atmospheric conditions
         real_t qliq = q[lqc].x[oned_vec_index] + q[lqr].x[oned_vec_index];
         real_t qice = q[lqs].x[oned_vec_index] + q[lqi].x[oned_vec_index] +
