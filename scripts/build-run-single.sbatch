@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=ka1273_gpu
-#SBATCH --job-name=icon-single
+#SBATCH --job-name=icon-single-percision
 #SBATCH --partition=gpu
 #SBATCH --gpus=1
 #SBATCH --output=%x.%j.log
@@ -26,8 +26,8 @@ export INPUT="1500k.nc"
 export ACC_TARGET="gpu"
 
 export ICON_DIR=$SLURM_SUBMIT_DIR
-export BASE_BUILD=$ICON_DIR/build-gcc
-export SEQ_BUILD=$ICON_DIR/build-nvhpc-seq
+export BASE_BUILD=$ICON_DIR/build-base
+export SEQ_BUILD=$ICON_DIR/build-gcc-seq
 export ACC_BUILD=$ICON_DIR/build-nvhpc-acc
 
 cd $ICON_DIR
@@ -37,12 +37,12 @@ rm -rf $SEQ_BUILD $ACC_BUILD $BASE_BUILD
 
 export CC=nvc
 export CXX=nvc++
-export SEQ_FLAGS=" -O2 -std=c++17 -Wall -Wextra "
+export SEQ_FLAGS=" -O3 -std=c++17 -Wall -Wextra "
 export ACC_FLAGS=" -acc=$ACC_TARGET -gpu=managed -gpu=cc80 -gpu=fastmath -Minfo=accel -fast $SEQ_FLAGS"
 
 echo "========================================================="
 echo "Building OpenACC impl with gcc for correctness checking: "
-cmake -DMU_IMPL=openacc -DMU_ENABLE_TESTS=OFF \
+cmake -DMU_IMPL=openacc -DMU_ENABLE_TESTS=ON \
     -DCMAKE_CXX_COMPILER=g++ \
     -DCMAKE_CXX_FLAGS="-O0" \
     -DMU_ENABLE_SINGLE=ON \
@@ -57,7 +57,7 @@ echo "========================================================="
 echo "Build Sequential impl with nvhpc for comparison baseline:"
 cmake -DMU_IMPL=seq -DMU_ENABLE_TESTS=OFF \
     -DCMAKE_CXX_COMPILER=$CXX \
-    -DCMAKE_CXX_FLAGS="$SEQ_FLAGS" \
+    -DCMAKE_CXX_FLAGS="-O2" \
     -DMU_ENABLE_SINGLE=ON \
     -B $BASE_BUILD -S .
 cmake --build $BASE_BUILD --parallel 2>&1 | tee base_build.log
@@ -81,7 +81,7 @@ $SEQ_BUILD/bin/graupel ./tasks/20k.nc
 echo "Comparing with reference result:"
 cdo diffn output.nc ./reference_results/sequential_single_20k.nc
 echo "Return status: $?"
-mv output.nc acc_double_20k.nc
+mv output.nc acc_single_20k.nc
 echo "========================================================="
 
 echo ""
